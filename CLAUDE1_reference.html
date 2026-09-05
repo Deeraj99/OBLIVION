@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ledger — Exam Papers &amp; Deadlines for Teachers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<style>
+  :root{
+    --ink:#16302B;
+    --ink-soft:#2A433D;
+    --paper:#ECEFE9;
+    --surface:#FBFAF5;
+    --line:#D8D9CE;
+    --muted:#5B6660;
+    --accent:#C98A2B;
+    --accent-ink:#2A1B04;
+    --accent-soft:#F3E3C4;
+    --red:#B23B34;
+    --red-soft:#F3DCDA;
+    --sage:#5C7A5E;
+    --sage-soft:#DEE7DD;
+    --radius:7px;
+    --shadow:0 1px 2px rgba(22,48,43,.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Work Sans',sans-serif;
+    font-size:14.5px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.serif{font-family:'Newsreader',serif;}
+  button{font-family:inherit;}
+  ::selection{background:var(--accent-soft);}
+  a{color:var(--ink);}
+
+  #app{display:flex;min-height:100vh;}
+  .hidden{display:none !important;}
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    width:216px;flex:none;background:var(--ink);color:var(--paper);
+    display:flex;flex-direction:column;padding:22px 14px;gap:6px;
+  }
+  .brand{display:flex;align-items:baseline;gap:8px;padding:2px 10px 22px;}
+  .brand .mark{font-family:'Newsreader',serif;font-style:italic;font-size:22px;color:var(--accent);}
+  .brand .word{font-family:'Newsreader',serif;font-size:19px;letter-spacing:.2px;}
+  .navitem{
+    display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius);
+    color:#CBD6CE;cursor:pointer;font-size:14px;font-weight:500;border:1px solid transparent;
+  }
+  .navitem svg{width:17px;height:17px;flex:none;opacity:.85;}
+  .navitem:hover{background:rgba(255,255,255,.06);color:#fff;}
+  .navitem.active{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.08);}
+  .sidebar-foot{margin-top:auto;padding:10px 10px 2px;font-size:12px;color:#8FA098;border-top:1px solid rgba(255,255,255,.1);padding-top:14px;}
+  .sidebar-foot .who{color:#E4E9DE;font-weight:600;margin-bottom:2px;}
+  .lock-link{cursor:pointer;text-decoration:underline;text-underline-offset:2px;}
+
+  /* ---------- Main ---------- */
+  .main{flex:1;min-width:0;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+  .topbar{
+    padding:20px 32px;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;flex:none;background:var(--paper);
+  }
+  .topbar h1{margin:0;font-size:22px;font-weight:500;}
+  .topbar .sub{color:var(--muted);font-size:13px;margin-top:2px;}
+  .content{flex:1;overflow-y:auto;padding:26px 32px 60px;}
+
+  .btn{
+    display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--surface);
+    color:var(--ink);padding:9px 15px;border-radius:var(--radius);cursor:pointer;font-size:13.5px;font-weight:600;
+    transition:background .12s, border-color .12s;
+  }
+  .btn:hover{border-color:var(--ink);}
+  .btn:disabled{opacity:.5;cursor:not-allowed;}
+  .btn-primary{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .btn-primary:hover{background:var(--ink-soft);}
+  .btn-accent{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);}
+  .btn-accent:hover{filter:brightness(1.05);}
+  .btn-ghost{background:transparent;border-color:transparent;}
+  .btn-ghost:hover{background:rgba(0,0,0,.05);}
+  .btn-danger{color:var(--red);}
+  .btn-sm{padding:6px 10px;font-size:12.5px;}
+  .icon-btn{width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;border-radius:6px;border:1px solid transparent;background:transparent;cursor:pointer;color:var(--muted);}
+  .icon-btn:hover{background:rgba(0,0,0,.06);color:var(--ink);}
+  .icon-btn svg{width:15px;height:15px;}
+
+  input[type=text],input[type=number],input[type=date],input[type=time],input[type=password],select,textarea{
+    width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:6px;background:var(--surface);
+    color:var(--ink);font-family:inherit;font-size:13.5px;
+  }
+  textarea{resize:vertical;min-height:64px;}
+  label.field-label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin:0 0 5px;letter-spacing:.1px;}
+  .field{margin-bottom:14px;}
+  .row{display:flex;gap:14px;}
+  .row > .field{flex:1;min-width:0;}
+
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;margin-bottom:20px;}
+  .panel h2{margin:0 0 4px;font-size:17px;font-weight:500;}
+  .panel .panel-hint{color:var(--muted);font-size:12.5px;margin:0 0 16px;}
+
+  .stat-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:22px;}
+  .stat{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:14px 16px;}
+  .stat .n{font-family:'Newsreader',serif;font-size:28px;line-height:1;}
+  .stat .l{color:var(--muted);font-size:12px;margin-top:6px;}
+  .stat.overdue .n{color:var(--red);}
+  .stat.today .n{color:var(--accent-ink);}
+  .stat.soon .n{color:var(--accent-ink);}
+
+  .ledger{border-top:1px solid var(--line);}
+  .ledger-row{
+    display:flex;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid var(--line);
+  }
+  .ledger-row:hover{background:rgba(0,0,0,.015);}
+  .dot{width:8px;height:8px;border-radius:50%;flex:none;}
+  .dot.high{background:var(--red);}
+  .dot.medium{background:var(--accent);}
+  .dot.low{background:var(--sage);}
+  .lr-main{flex:1;min-width:0;}
+  .lr-title{font-weight:600;font-size:14px;}
+  .lr-meta{color:var(--muted);font-size:12px;margin-top:2px;}
+  .lr-date{font-size:12.5px;color:var(--muted);white-space:nowrap;}
+  .lr-date.overdue{color:var(--red);font-weight:600;}
+  .pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;}
+  .pill.high{background:var(--red-soft);color:var(--red);}
+  .pill.medium{background:var(--accent-soft);color:var(--accent-ink);}
+  .pill.low{background:var(--sage-soft);color:var(--sage);}
+  .pill.status{background:#E7E9E1;color:var(--muted);}
+
+  .empty{padding:34px 10px;text-align:center;color:var(--muted);}
+  .empty .serif{font-size:18px;color:var(--ink);display:block;margin-bottom:6px;}
+
+  .two-col{display:grid;grid-template-columns:1.4fr 1fr;gap:20px;align-items:start;}
+
+  .banner{
+    display:flex;align-items:flex-start;gap:10px;background:var(--accent-soft);border:1px solid var(--accent);
+    border-radius:10px;padding:13px 15px;margin-bottom:20px;font-size:13.5px;color:var(--accent-ink);
+  }
+  .banner b{font-weight:700;}
+  .banner-list{margin:6px 0 0;padding-left:18px;}
+
+  /* Modal */
+  .modal-backdrop{
+    position:fixed;inset:0;background:rgba(22,48,43,.4);display:flex;align-items:center;justify-content:center;
+    z-index:100;padding:20px;
+  }
+  .modal{
+    background:var(--surface);border-radius:12px;max-width:560px;width:100%;max-height:88vh;overflow-y:auto;
+    padding:26px 26px 22px;box-shadow:0 20px 50px rgba(0,0,0,.25);
+  }
+  .modal.wide{max-width:920px;}
+  .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+  .modal-head h2{margin:0;font-size:19px;font-weight:500;}
+  .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);}
+
+  .checkbox-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .check-item{display:flex;align-items:center;gap:8px;padding:7px 9px;border:1px solid var(--line);border-radius:6px;font-size:13px;cursor:pointer;background:var(--surface);}
+  .check-item input{width:auto;}
+  .check-item.on{border-color:var(--accent);background:var(--accent-soft);}
+
+  .chapter-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
+  .chapter-row input[type=text]{flex:2;}
+  .chapter-row input[type=number]{flex:1;}
+
+  .slider-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .slider-row label{width:70px;font-size:12.5px;color:var(--muted);font-weight:600;}
+  .slider-row input[type=range]{flex:1;accent-color:var(--accent);}
+  .slider-row .val{width:40px;text-align:right;font-size:13px;font-weight:600;}
+
+  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:18px;}
+  .tab{padding:9px 4px;margin-right:18px;font-size:13.5px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;}
+  .tab.active{color:var(--ink);border-color:var(--accent);}
+
+  .wizard-steps{display:flex;gap:0;margin-bottom:22px;}
+  .wstep{flex:1;text-align:center;padding-bottom:10px;border-bottom:3px solid var(--line);color:var(--muted);font-size:12.5px;font-weight:600;position:relative;}
+  .wstep.active{color:var(--ink);border-color:var(--accent);}
+  .wstep.done{color:var(--ink);border-color:var(--sage);}
+
+  .qcard{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:12px;background:var(--surface);}
+  .qcard .qhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px;}
+  .qtag{font-size:11px;font-weight:700;letter-spacing:.3px;color:var(--muted);}
+  .qcard textarea{margin-bottom:8px;}
+  .qmeta-row{display:flex;gap:8px;}
+  .qmeta-row > *{flex:1;}
+  .answer-toggle{font-size:12px;color:var(--muted);cursor:pointer;text-decoration:underline;text-underline-offset:2px;margin-top:6px;display:inline-block;}
+
+  .valid-item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line);}
+  .valid-item:last-child{border-bottom:none;}
+  .valid-icon{width:18px;height:18px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;margin-top:1px;}
+  .valid-icon.ok{background:var(--sage);}
+  .valid-icon.bad{background:var(--red);}
+  .valid-title{font-weight:600;font-size:13.5px;}
+  .valid-detail{color:var(--muted);font-size:12.5px;margin-top:2px;}
+
+  /* Exam preview / print sheet */
+  .sheet{background:#fff;border:1px solid var(--line);padding:44px 48px;font-family:'Newsreader',serif;color:#111;max-width:760px;margin:0 auto;}
+  .sheet h1{font-size:22px;text-align:center;margin:0 0 2px;}
+  .sheet .meta-line{text-align:center;font-size:13px;color:#333;margin-bottom:4px;font-family:'Work Sans',sans-serif;}
+  .sheet hr{border:none;border-top:1px solid #999;margin:14px 0;}
+  .sheet .instructions{font-family:'Work Sans',sans-serif;font-size:12.5px;background:#f4f4ef;border:1px solid #ccc;padding:10px 14px;margin-bottom:18px;}
+  .sheet .section-h{font-weight:600;font-size:15px;margin:22px 0 10px;}
+  .sheet .q{margin-bottom:14px;font-size:14px;}
+  .sheet .q .qn{font-weight:600;}
+  .sheet .q .marks{float:right;font-family:'Work Sans',sans-serif;font-size:12px;color:#444;}
+
+  /* Calendar */
+  .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;}
+  .cal-dow{background:var(--ink);color:var(--paper);text-align:center;padding:7px 0;font-size:11.5px;font-weight:600;}
+  .cal-cell{background:var(--surface);min-height:88px;padding:6px 7px;cursor:pointer;}
+  .cal-cell:hover{background:#fff;}
+  .cal-cell.dim{background:#EEEEE6;color:var(--muted);}
+  .cal-cell.today{outline:2px solid var(--accent);outline-offset:-2px;}
+  .cal-daynum{font-size:12px;font-weight:600;margin-bottom:5px;}
+  .cal-dots{display:flex;flex-wrap:wrap;gap:3px;}
+
+  .toast-wrap{position:fixed;bottom:20px;right:20px;z-index:200;display:flex;flex-direction:column;gap:8px;}
+  .toast{background:var(--ink);color:#fff;padding:11px 16px;border-radius:8px;font-size:13px;box-shadow:0 6px 18px rgba(0,0,0,.2);max-width:320px;}
+  .toast.err{background:var(--red);}
+  .toast.ok{background:var(--sage);}
+
+  .spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;}
+  .spin.dark{border:2px solid rgba(22,48,43,.25);border-top-color:var(--ink);}
+  @keyframes sp{to{transform:rotate(360deg);}}
+
+  .upload-box{border:1.5px dashed var(--line);border-radius:10px;padding:22px;text-align:center;color:var(--muted);font-size:13px;cursor:pointer;}
+  .upload-box:hover{border-color:var(--accent);}
+  .analysis-box{background:var(--sage-soft);border:1px solid var(--sage);border-radius:8px;padding:12px 14px;font-size:12.5px;margin-top:12px;}
+
+  @media print{
+    .sidebar,.topbar,.no-print{display:none !important;}
+    .content{overflow:visible;padding:0;}
+    .sheet{border:none;padding:0;max-width:none;}
+  }
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* ============================================================
+   LEDGER — Teacher Toolkit
+   Two features: AI Exam Paper Creator + Deadline Reminder System
+   Persistence: window.storage (per-teacher, private)
+   AI: Claude API called client-side (no key handling needed)
+   ============================================================ */
+
+const CLAUDE_MODEL = "claude-sonnet-4-6";
+
+/* ---------------- State ---------------- */
+const state = {
+  profile: null,          // {name, school, pin}
+  unlocked: false,
+  deadlines: [],          // array
+  papers: [],             // array
+  view: "dashboard",
+  calMonth: (()=>{const d=new Date();d.setDate(1);return d;})(),
+  draft: null,            // exam paper currently being built
+  wizardStep: 1,
+  editingDeadlineId: null,
+  calSelectedDate: null,
+  suggestTopicResults: [],
+};
+
+/* ---------------- Storage helpers ---------------- */
+async function storeGet(key){
+  try{ const r = await window.storage.get(key,false); return r ? JSON.parse(r.value) : null; }
+  catch(e){ return null; }
+}
+async function storeSet(key,val){
+  try{ await window.storage.set(key, JSON.stringify(val), false); }
+  catch(e){ toast("Couldn't save "+key+" — changes may not persist.","err"); }
+}
+
+async function loadAll(){
+  state.profile = await storeGet('teacherProfile');
+  state.deadlines = (await storeGet('deadlines')) || [];
+  state.papers = (await storeGet('examPapers')) || [];
+}
+function saveDeadlines(){ storeSet('deadlines', state.deadlines); }
+function savePapers(){ storeSet('examPapers', state.papers); }
+function saveProfile(){ storeSet('teacherProfile', state.profile); }
+
+/* ---------------- Utils ---------------- */
+function uid(){ return Math.random().toString(36).slice(2,10); }
+function esc(s){ return (s==null?"":String(s)).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function fmtDate(iso){
+  if(!iso) return "";
+  const d = new Date(iso+"T00:00:00");
+  return d.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+}
+function todayISO(){ const d=new Date(); return d.toISOString().slice(0,10); }
+function daysUntil(iso){
+  const today = new Date(todayISO()+"T00:00:00");
+  const d = new Date(iso+"T00:00:00");
+  return Math.round((d-today)/86400000);
+}
+function toast(msg, type){
+  const el = document.createElement('div');
+  el.className = 'toast'+(type?' '+type:'');
+  el.textContent = msg;
+  document.getElementById('toastWrap').appendChild(el);
+  setTimeout(()=>el.remove(), 4200);
+}
+function stripFence(s){
+  return s.replace(/^```[a-zA-Z]*\n?/,'').replace(/```$/,'').trim();
+}
+
+/* ---------------- Claude API ---------------- */
+async function claudeCall(system, userContent, maxTokens){
+  const body = {
+    model: CLAUDE_MODEL,
+    max_tokens: maxTokens || 2000,
+    system: system,
+    messages: [{ role:"user", content:userContent }]
+  };
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify(body)
+  });
+  if(!res.ok){ throw new Error("AI request failed ("+res.status+")"); }
+  const data = await res.json();
+  const textBlock = (data.content||[]).find(b=>b.type==="text");
+  if(!textBlock) throw new Error("No response from AI.");
+  return textBlock.text;
+}
+async function claudeJSON(system, userText, maxTokens){
+  const raw = await claudeCall(system, userText, maxTokens);
+  const cleaned = stripFence(raw);
+  try{ return JSON.parse(cleaned); }
+  catch(e){
+    const m = cleaned.match(/(\[[\s\S]*\]|\{[\s\S]*\})/);
+    if(m){ try{ return JSON.parse(m[1]); }catch(e2){} }
+    throw new Error("AI returned an unexpected format. Please try again.");
+  }
+}
+
+/* ---------------- File -> base64 / text ---------------- */
+function readFileAsBase64(file){
+  return new Promise((res,rej)=>{
+    const r = new FileReader();
+    r.onload = ()=>res(r.result.split(",")[1]);
+    r.onerror = ()=>rej(new Error("Couldn't read file"));
+    r.readAsDataURL(file);
+  });
+}
+function readFileAsArrayBuffer(file){
+  return new Promise((res,rej)=>{
+    const r = new FileReader();
+    r.onload = ()=>res(r.result);
+    r.onerror = ()=>rej(new Error("Couldn't read file"));
+    r.readAsArrayBuffer(file);
+  });
+}
+
+/* ============================================================
+   RENDER ROOT
+   ============================================================ */
+function render(){
+  const app = document.getElementById('app');
+  if(!state.profile){ app.innerHTML = renderSetup(); attachSetupEvents(); return; }
+  if(state.profile.pin && !state.unlocked){ app.innerHTML = renderLock(); attachLockEvents(); return; }
+
+  app.innerHTML = `
+    ${renderSidebar()}
+    <div class="main">
+      ${renderTopbar()}
+      <div class="content" id="content">${renderView()}</div>
+    </div>
+    ${renderModals()}
+  `;
+  attachGlobalEvents();
+}
+
+/* ---------------- Setup / lock screens ---------------- */
+function renderSetup(){
+  return `
+  <div style="width:100%;min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--paper);">
+    <div class="panel" style="max-width:420px;width:100%;">
+      <div class="brand" style="padding:0 0 18px;">
+        <span class="mark">L</span><span class="word" style="color:var(--ink);">Ledger</span>
+      </div>
+      <h2>Set up your workspace</h2>
+      <p class="panel-hint">This toolkit is for teachers only — no student accounts exist here. Your papers and deadlines stay private to you.</p>
+      <div class="field"><label class="field-label">Your name</label><input type="text" id="setupName" placeholder="e.g. Ms. Anjali Rao"></div>
+      <div class="field"><label class="field-label">School (optional)</label><input type="text" id="setupSchool" placeholder="e.g. Greenwood High School"></div>
+      <div class="field"><label class="field-label">4-digit PIN (optional — protects this device)</label><input type="text" id="setupPin" maxlength="4" placeholder="Leave blank to skip"></div>
+      <button class="btn btn-primary" id="setupSave" style="width:100%;justify-content:center;margin-top:6px;">Enter workspace</button>
+    </div>
+  </div>`;
+}
+function attachSetupEvents(){
+  document.getElementById('setupSave').onclick = async ()=>{
+    const name = document.getElementById('setupName').value.trim();
+    if(!name){ toast("Please enter your name.","err"); return; }
+    const school = document.getElementById('setupSchool').value.trim();
+    const pin = document.getElementById('setupPin').value.trim();
+    state.profile = { name, school, pin: pin || null };
+    state.unlocked = true;
+    await saveProfile();
+    render();
+  };
+}
+function renderLock(){
+  return `
+  <div style="width:100%;min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--paper);">
+    <div class="panel" style="max-width:340px;width:100%;text-align:center;">
+      <div class="brand" style="padding:0 0 18px;justify-content:center;">
+        <span class="mark">L</span><span class="word" style="color:var(--ink);">Ledger</span>
+      </div>
+      <p class="panel-hint">Welcome back, ${esc(state.profile.name)}. Enter your PIN to continue.</p>
+      <input type="password" id="lockPin" maxlength="4" style="text-align:center;letter-spacing:6px;font-size:18px;">
+      <button class="btn btn-primary" id="lockGo" style="width:100%;justify-content:center;margin-top:12px;">Unlock</button>
+      <div style="margin-top:14px;"><span class="lock-link" id="forgotPin" style="font-size:12px;color:var(--muted);">Reset workspace</span></div>
+    </div>
+  </div>`;
+}
+function attachLockEvents(){
+  const go = ()=>{
+    const v = document.getElementById('lockPin').value.trim();
+    if(v === state.profile.pin){ state.unlocked = true; render(); }
+    else toast("Incorrect PIN","err");
+  };
+  document.getElementById('lockGo').onclick = go;
+  document.getElementById('lockPin').addEventListener('keydown', e=>{ if(e.key==='Enter') go(); });
+  document.getElementById('forgotPin').onclick = async ()=>{
+    if(confirm("This clears your PIN so you can get back in. Your papers and deadlines stay intact. Continue?")){
+      state.profile.pin = null; state.unlocked = true; await saveProfile(); render();
+    }
+  };
+}
+
+/* ---------------- Sidebar / Topbar ---------------- */
+const NAV = [
+  {id:'dashboard', label:'Dashboard', icon:'grid'},
+  {id:'papers', label:'Exam Papers', icon:'doc'},
+  {id:'deadlines', label:'Deadlines', icon:'clock'},
+  {id:'calendar', label:'Calendar', icon:'cal'},
+];
+const ICONS = {
+  grid:'<path d="M3 3h7v7H3zM12 3h7v7h-7zM3 12h7v7H3zM12 12h7v7h-7z" fill="none" stroke="currentColor" stroke-width="1.4"/>',
+  doc:'<path d="M6 2h7l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M13 2v4h4" fill="none" stroke="currentColor" stroke-width="1.4"/>',
+  clock:'<circle cx="11" cy="11" r="8.3" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M11 6.5V11l3 2" fill="none" stroke="currentColor" stroke-width="1.4"/>',
+  cal:'<rect x="3" y="4.5" width="16" height="14.5" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M3 9h16M7 2.5v4M15 2.5v4" stroke="currentColor" stroke-width="1.4"/>',
+};
+function icon(name){ return `<svg viewBox="0 0 22 22">${ICONS[name]}</svg>`; }
+
+function renderSidebar(){
+  return `
+  <div class="sidebar">
+    <div class="brand"><span class="mark">L</span><span class="word">Ledger</span></div>
+    ${NAV.map(n=>`<div class="navitem ${state.view===n.id?'active':''}" data-nav="${n.id}">${icon(n.icon)}<span>${n.label}</span></div>`).join('')}
+    <div class="sidebar-foot">
+      <div class="who">${esc(state.profile.name)}</div>
+      <div>${esc(state.profile.school||'Teacher workspace')}</div>
+      ${state.profile.pin?`<div style="margin-top:8px;"><span class="lock-link" id="navLock">Lock workspace</span></div>`:''}
+    </div>
+  </div>`;
+}
+const TITLES = {
+  dashboard:['Dashboard', "Today's overview across papers and deadlines"],
+  papers:['Exam Papers', 'Build, validate and export exam papers with AI help'],
+  deadlines:['Deadlines', 'Track assignments, exams and everything else due'],
+  calendar:['Calendar', 'All deadlines, laid out by date'],
+};
+function renderTopbar(){
+  const [title, sub] = TITLES[state.view];
+  let action = '';
+  if(state.view==='deadlines') action = `<button class="btn btn-accent" id="btnAddDeadline">+ New deadline</button>`;
+  if(state.view==='papers' && !state.draft) action = `<button class="btn btn-accent" id="btnNewPaper">+ New paper</button>`;
+  if(state.view==='papers' && state.draft) action = `<button class="btn btn-ghost" id="btnBackPapers">← All papers</button>`;
+  return `<div class="topbar"><div><h1>${title}</h1><div class="sub">${sub}</div></div><div>${action}</div></div>`;
+}
+
+function renderView(){
+  if(state.view==='dashboard') return renderDashboard();
+  if(state.view==='deadlines') return renderDeadlines();
+  if(state.view==='calendar') return renderCalendar();
+  if(state.view==='papers') return state.draft ? renderWizard() : renderPapersList();
+  return '';
+}
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+function bucketDeadlines(){
+  const b = {overdue:[], today:[], soon:[], upcoming:[], completed:[]};
+  state.deadlines.forEach(d=>{
+    if(d.status==='Completed'){ b.completed.push(d); return; }
+    const n = daysUntil(d.date);
+    if(n<0) b.overdue.push(d);
+    else if(n===0) b.today.push(d);
+    else if(n<=3) b.soon.push(d);
+    else b.upcoming.push(d);
+  });
+  const byDate = (a,c)=> a.date===c.date ? 0 : (a.date<c.date?-1:1);
+  Object.values(b).forEach(arr=>arr.sort(byDate));
+  return b;
+}
+function activeReminders(){
+  const out = [];
+  state.deadlines.forEach(d=>{
+    if(d.status==='Completed') return;
+    const n = daysUntil(d.date);
+    const rd = d.reminderDays || [7,3,1,0];
+    if(rd.includes(n) && n>=0) out.push({d,n});
+  });
+  return out.sort((a,c)=>a.n-c.n);
+}
+function renderDashboard(){
+  const b = bucketDeadlines();
+  const reminders = activeReminders();
+  const drafts = state.papers.filter(p=>p.status!=='Final');
+  return `
+  ${reminders.length? `
+  <div class="banner">
+    <div style="font-size:16px;">🔔</div>
+    <div>
+      <b>${reminders.length} reminder${reminders.length>1?'s':''} today</b>
+      <ul class="banner-list">
+        ${reminders.slice(0,5).map(r=>`<li>${esc(r.d.title)} — ${r.n===0?'due today':r.n+' day'+(r.n>1?'s':'')+' left'}</li>`).join('')}
+      </ul>
+    </div>
+  </div>`:''}
+
+  <div class="stat-row">
+    <div class="stat overdue"><div class="n">${b.overdue.length}</div><div class="l">Overdue</div></div>
+    <div class="stat today"><div class="n">${b.today.length}</div><div class="l">Due today</div></div>
+    <div class="stat soon"><div class="n">${b.soon.length}</div><div class="l">Due soon (≤3d)</div></div>
+    <div class="stat"><div class="n">${b.upcoming.length}</div><div class="l">Upcoming</div></div>
+    <div class="stat"><div class="n">${b.completed.length}</div><div class="l">Completed</div></div>
+  </div>
+
+  <div class="two-col">
+    <div class="panel">
+      <h2>What needs attention</h2>
+      <p class="panel-hint">Overdue, due today, and due soon — in that order.</p>
+      ${renderDeadlineLedger([...b.overdue, ...b.today, ...b.soon].slice(0,8), true)}
+      ${(b.overdue.length+b.today.length+b.soon.length)===0 ? `<div class="empty"><span class="serif">All clear</span>Nothing urgent right now.</div>`:''}
+    </div>
+    <div class="panel">
+      <h2>Exam papers in progress</h2>
+      <p class="panel-hint">Pick one up where you left off.</p>
+      ${drafts.length? drafts.slice(0,6).map(p=>`
+        <div class="ledger-row" data-open-paper="${p.id}" style="cursor:pointer;">
+          <div class="lr-main"><div class="lr-title">${esc(p.setup.examName||'Untitled paper')}</div>
+          <div class="lr-meta">${esc(p.setup.subject)} · ${esc(p.setup.className)} · ${p.questions.length}/${p.setup.numQuestions} questions</div></div>
+          <span class="pill status">${p.status}</span>
+        </div>`).join('') : `<div class="empty"><span class="serif">No drafts yet</span>Start a new exam paper from the Exam Papers tab.</div>`}
+    </div>
+  </div>`;
+}
+function renderDeadlineLedger(list, dashboardMode){
+  if(!list.length) return '';
+  return `<div class="ledger">${list.map(d=>{
+    const n = daysUntil(d.date);
+    const overdue = n<0 && d.status!=='Completed';
+    return `
+    <div class="ledger-row" data-open-deadline="${d.id}" style="cursor:pointer;">
+      <span class="dot ${d.priority.toLowerCase()}"></span>
+      <div class="lr-main">
+        <div class="lr-title">${esc(d.title)}</div>
+        <div class="lr-meta">${esc(d.category)}${d.subject?' · '+esc(d.subject):''}${d.className?' · '+esc(d.className):''}</div>
+      </div>
+      <span class="pill ${d.priority.toLowerCase()}">${d.priority}</span>
+      <span class="lr-date ${overdue?'overdue':''}">${overdue? Math.abs(n)+'d overdue' : (n===0?'Today': n+'d left')}</span>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+/* ============================================================
+   DEADLINES VIEW
+   ============================================================ */
+function renderDeadlines(){
+  const b = bucketDeadlines();
+  const groups = [
+    ['Overdue', b.overdue], ['Today', b.today], ['Due soon', b.soon],
+    ['Upcoming', b.upcoming], ['Completed', b.completed],
+  ];
+  return groups.map(([label,list])=>`
+    <div class="panel">
+      <h2>${label} <span style="color:var(--muted);font-weight:400;font-size:14px;">(${list.length})</span></h2>
+      ${list.length? renderDeadlineLedger(list) : `<div class="empty">Nothing here.</div>`}
+    </div>`).join('');
+}
+
+function deadlineForm(existing){
+  const d = existing || {title:'',description:'',subject:'',className:'',date:todayISO(),time:'',priority:'Medium',category:'Assignment',notes:'',status:'Pending',reminderDays:[7,3,1,0]};
+  const cats = ['Assignment','Project','Exam','Internal Assessment','Lab Work','Presentation','Seminar','Other'];
+  return `
+    <div class="row">
+      <div class="field"><label class="field-label">Title</label><input type="text" id="dfTitle" value="${esc(d.title)}" placeholder="e.g. Submit Unit 4 assignments"></div>
+      <div class="field"><label class="field-label">Category</label>
+        <select id="dfCategory">${cats.map(c=>`<option ${d.category===c?'selected':''}>${c}</option>`).join('')}</select>
+      </div>
+    </div>
+    <div class="field"><label class="field-label">Description</label><textarea id="dfDesc" placeholder="Optional details">${esc(d.description)}</textarea></div>
+    <div class="row">
+      <div class="field"><label class="field-label">Subject</label><input type="text" id="dfSubject" value="${esc(d.subject)}" placeholder="e.g. Physics"></div>
+      <div class="field"><label class="field-label">Class</label><input type="text" id="dfClass" value="${esc(d.className)}" placeholder="e.g. Grade 10-B"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label class="field-label">Date</label><input type="date" id="dfDate" value="${d.date}"></div>
+      <div class="field"><label class="field-label">Time</label><input type="time" id="dfTime" value="${d.time||''}"></div>
+      <div class="field"><label class="field-label">Priority</label>
+        <select id="dfPriority"><option ${d.priority==='Low'?'selected':''}>Low</option><option ${d.priority==='Medium'?'selected':''}>Medium</option><option ${d.priority==='High'?'selected':''}>High</option></select>
+      </div>
+    </div>
+    <div class="field"><label class="field-label">Notes</label><textarea id="dfNotes" placeholder="Optional notes">${esc(d.notes)}</textarea></div>
+    <div class="field"><label class="field-label">Status</label>
+      <select id="dfStatus"><option ${d.status==='Pending'?'selected':''}>Pending</option><option ${d.status==='In Progress'?'selected':''}>In Progress</option><option ${d.status==='Completed'?'selected':''}>Completed</option></select>
+    </div>
+    <div class="field"><label class="field-label">Remind me before (days)</label>
+      <div class="checkbox-grid" style="grid-template-columns:repeat(4,1fr);">
+        ${[7,3,1,0].map(n=>`<label class="check-item ${d.reminderDays.includes(n)?'on':''}"><input type="checkbox" class="dfRem" value="${n}" ${d.reminderDays.includes(n)?'checked':''}> ${n===0?'Same day':n+' day'+(n>1?'s':'')}</label>`).join('')}
+      </div>
+    </div>`;
+}
+
+function openDeadlineModal(id){
+  state.editingDeadlineId = id || null;
+  const existing = id ? state.deadlines.find(d=>d.id===id) : null;
+  showModal(`
+    <div class="modal-head"><h2>${existing?'Edit deadline':'New deadline'}</h2><span class="icon-btn" id="closeModal">✕</span></div>
+    ${deadlineForm(existing)}
+    <div class="modal-actions">
+      ${existing? `<button class="btn btn-danger" id="dfDelete" style="margin-right:auto;">Delete</button>`:''}
+      <button class="btn btn-ghost" id="dfCancel">Cancel</button>
+      <button class="btn btn-primary" id="dfSave">${existing?'Save changes':'Add deadline'}</button>
+    </div>
+  `);
+  document.querySelectorAll('.check-item').forEach(el=>{
+    el.addEventListener('click', ()=> setTimeout(()=>{ el.classList.toggle('on', el.querySelector('input').checked); },0));
+  });
+  document.getElementById('closeModal').onclick = closeModal;
+  document.getElementById('dfCancel').onclick = closeModal;
+  if(existing) document.getElementById('dfDelete').onclick = ()=>{
+    if(confirm("Delete this deadline?")){
+      state.deadlines = state.deadlines.filter(d=>d.id!==existing.id);
+      saveDeadlines(); closeModal(); render();
+    }
+  };
+  document.getElementById('dfSave').onclick = ()=>{
+    const title = document.getElementById('dfTitle').value.trim();
+    if(!title){ toast("Please add a title.","err"); return; }
+    const rem = Array.from(document.querySelectorAll('.dfRem:checked')).map(x=>parseInt(x.value,10));
+    const payload = {
+      id: existing? existing.id : uid(),
+      title, description: document.getElementById('dfDesc').value.trim(),
+      subject: document.getElementById('dfSubject').value.trim(),
+      className: document.getElementById('dfClass').value.trim(),
+      date: document.getElementById('dfDate').value || todayISO(),
+      time: document.getElementById('dfTime').value,
+      priority: document.getElementById('dfPriority').value,
+      category: document.getElementById('dfCategory').value,
+      notes: document.getElementById('dfNotes').value.trim(),
+      status: document.getElementById('dfStatus').value,
+      reminderDays: rem.length? rem : [7,3,1,0],
+    };
+    if(existing){
+      const idx = state.deadlines.findIndex(d=>d.id===existing.id);
+      state.deadlines[idx] = payload;
+    } else {
+      state.deadlines.push(payload);
+    }
+    saveDeadlines(); closeModal(); render();
+    toast(existing?"Deadline updated":"Deadline added","ok");
+  };
+}
+
+/* ============================================================
+   CALENDAR VIEW
+   ============================================================ */
+function renderCalendar(){
+  const m = state.calMonth;
+  const year = m.getFullYear(), month = m.getMonth();
+  const first = new Date(year, month, 1);
+  const startOffset = first.getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const prevDays = new Date(year, month, 0).getDate();
+  const cells = [];
+  for(let i=0;i<startOffset;i++) cells.push({n:prevDays-startOffset+1+i, dim:true});
+  for(let d=1; d<=daysInMonth; d++) cells.push({n:d, dim:false, date:`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`});
+  while(cells.length%7!==0 || cells.length<42) cells.push({n:cells.length, dim:true});
+
+  const byDate = {};
+  state.deadlines.forEach(d=>{ (byDate[d.date] = byDate[d.date]||[]).push(d); });
+  const monthLabel = m.toLocaleDateString(undefined,{month:'long',year:'numeric'});
+  const dows = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+  return `
+  <div class="panel">
+    <div class="cal-head">
+      <button class="icon-btn" id="calPrev">‹</button>
+      <h2 style="margin:0;">${monthLabel}</h2>
+      <button class="icon-btn" id="calNext">›</button>
+    </div>
+    <div class="cal-grid">
+      ${dows.map(d=>`<div class="cal-dow">${d}</div>`).join('')}
+      ${cells.map(c=>{
+        if(c.dim) return `<div class="cal-cell dim"><div class="cal-daynum">${c.n}</div></div>`;
+        const items = byDate[c.date]||[];
+        const isToday = c.date===todayISO();
+        return `<div class="cal-cell ${isToday?'today':''}" data-cal-day="${c.date}">
+          <div class="cal-daynum">${c.n}</div>
+          <div class="cal-dots">${items.slice(0,6).map(d=>`<span class="dot ${d.priority.toLowerCase()}" title="${esc(d.title)}"></span>`).join('')}</div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+}
+
+function openDayPanel(dateStr){
+  const items = state.deadlines.filter(d=>d.date===dateStr);
+  showModal(`
+    <div class="modal-head"><h2>${fmtDate(dateStr)}</h2><span class="icon-btn" id="closeModal">✕</span></div>
+    ${items.length? `<div class="ledger">${items.map(d=>`
+      <div class="ledger-row" data-open-deadline="${d.id}" style="cursor:pointer;">
+        <span class="dot ${d.priority.toLowerCase()}"></span>
+        <div class="lr-main"><div class="lr-title">${esc(d.title)}</div><div class="lr-meta">${esc(d.category)}</div></div>
+        <span class="pill status">${d.status}</span>
+      </div>`).join('')}</div>` : `<div class="empty">No deadlines on this day.</div>`}
+    <div class="modal-actions"><button class="btn btn-accent" id="addOnDay">+ Add deadline on this day</button></div>
+  `);
+  document.getElementById('closeModal').onclick = closeModal;
+  document.querySelectorAll('[data-open-deadline]').forEach(el=>{
+    el.onclick = ()=>{ closeModal(); openDeadlineModal(el.dataset.openDeadline); };
+  });
+  document.getElementById('addOnDay').onclick = ()=>{
+    closeModal();
+    openDeadlineModal(null);
+    setTimeout(()=>{ const f=document.getElementById('dfDate'); if(f) f.value = dateStr; },0);
+  };
+}
+
+/* ============================================================
+   EXAM PAPERS — LIST
+   ============================================================ */
+function renderPapersList(){
+  if(!state.papers.length){
+    return `<div class="panel"><div class="empty"><span class="serif">No exam papers yet</span>Start one with the "New paper" button above — set up your class, chapters and mark distribution, then let AI suggest questions.</div></div>`;
+  }
+  return `<div class="panel"><div class="ledger">
+    ${state.papers.slice().reverse().map(p=>`
+      <div class="ledger-row">
+        <div class="lr-main">
+          <div class="lr-title">${esc(p.setup.examName||'Untitled paper')}</div>
+          <div class="lr-meta">${esc(p.setup.subject)} · ${esc(p.setup.className)} · ${p.setup.totalMarks} marks · ${p.questions.length} question${p.questions.length!==1?'s':''}</div>
+        </div>
+        <span class="pill status">${p.status}</span>
+        <button class="btn btn-sm" data-open-paper="${p.id}">Open</button>
+        <button class="icon-btn" data-dup-paper="${p.id}" title="Duplicate">⧉</button>
+        <button class="icon-btn btn-danger" data-del-paper="${p.id}" title="Delete">✕</button>
+      </div>`).join('')}
+  </div></div>`;
+}
+
+function newPaperDraft(){
+  state.draft = {
+    id: uid(),
+    status: 'Draft',
+    setup: {
+      className:'', subject:'', examName:'', duration:90, totalMarks:50, numQuestions:10,
+      chapters:[{name:'Chapter 1', marks:50}],
+      types: ['MCQ','Short Answer','Long Answer'],
+      difficulty: {easy:30, medium:50, hard:20},
+    },
+    analysis: null,
+    questions: [],
+  };
+  state.wizardStep = 1;
+  render();
+}
+function openPaper(id){
+  state.draft = state.papers.find(p=>p.id===id);
+  state.wizardStep = 1;
+  render();
+}
+
+/* ============================================================
+   EXAM PAPER WIZARD
+   ============================================================ */
+const ALL_TYPES = ['MCQ','Very Short Answer','Short Answer','Long Answer','Essay','Numerical','Case Study','Application-Based','Assertion-Reasoning'];
+const MIN_PER_MARK = {'MCQ':1.2,'Very Short Answer':1.5,'Short Answer':2,'Long Answer':3,'Essay':3.5,'Numerical':2.5,'Case Study':3,'Application-Based':2.5,'Assertion-Reasoning':1.5};
+
+function renderWizard(){
+  const steps = ['Setup','Build questions','Validate','Export'];
+  return `
+  <div class="wizard-steps">
+    ${steps.map((s,i)=>`<div class="wstep ${state.wizardStep===i+1?'active':state.wizardStep>i+1?'done':''}" data-step="${i+1}">${i+1}. ${s}</div>`).join('')}
+  </div>
+  ${state.wizardStep===1?renderStepSetup():''}
+  ${state.wizardStep===2?renderStepBuild():''}
+  ${state.wizardStep===3?renderStepValidate():''}
+  ${state.wizardStep===4?renderStepExport():''}
+  `;
+}
+
+/* ---- Step 1: Setup ---- */
+function renderStepSetup(){
+  const s = state.draft.setup;
+  return `
+  <div class="panel">
+    <h2>Paper setup</h2>
+    <p class="panel-hint">Define the shape of the paper. You can fine-tune everything later.</p>
+    <div class="row">
+      <div class="field"><label class="field-label">Exam name</label><input type="text" id="spExamName" value="${esc(s.examName)}" placeholder="e.g. Mid-Term Examination"></div>
+      <div class="field"><label class="field-label">Class / Grade</label><input type="text" id="spClass" value="${esc(s.className)}" placeholder="e.g. Grade 9"></div>
+      <div class="field"><label class="field-label">Subject</label><input type="text" id="spSubject" value="${esc(s.subject)}" placeholder="e.g. Biology"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label class="field-label">Duration (minutes)</label><input type="number" id="spDuration" value="${s.duration}"></div>
+      <div class="field"><label class="field-label">Total marks</label><input type="number" id="spTotalMarks" value="${s.totalMarks}"></div>
+      <div class="field"><label class="field-label">Number of questions</label><input type="number" id="spNumQ" value="${s.numQuestions}"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Chapters &amp; mark distribution</h2>
+    <p class="panel-hint">Give each chapter a target number of marks. These should add up to the total marks above.</p>
+    <div id="chapterRows">
+      ${s.chapters.map((c,i)=>`
+        <div class="chapter-row" data-idx="${i}">
+          <input type="text" class="chName" value="${esc(c.name)}" placeholder="Chapter / topic name">
+          <input type="number" class="chMarks" value="${c.marks}" placeholder="Marks">
+          <span class="icon-btn removeChapter">✕</span>
+        </div>`).join('')}
+    </div>
+    <button class="btn btn-sm" id="addChapter">+ Add chapter</button>
+    <div style="margin-top:8px;font-size:12.5px;color:var(--muted);" id="chapterSum"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Question types allowed</h2>
+    <div class="checkbox-grid">
+      ${ALL_TYPES.map(t=>`<label class="check-item ${s.types.includes(t)?'on':''}"><input type="checkbox" class="typeChk" value="${t}" ${s.types.includes(t)?'checked':''}> ${t}</label>`).join('')}
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Difficulty distribution</h2>
+    <div class="slider-row"><label>Easy</label><input type="range" min="0" max="100" id="diffEasy" value="${s.difficulty.easy}"><span class="val" id="diffEasyVal">${s.difficulty.easy}%</span></div>
+    <div class="slider-row"><label>Medium</label><input type="range" min="0" max="100" id="diffMedium" value="${s.difficulty.medium}"><span class="val" id="diffMediumVal">${s.difficulty.medium}%</span></div>
+    <div class="slider-row"><label>Hard</label><input type="range" min="0" max="100" id="diffHard" value="${s.difficulty.hard}"><span class="val" id="diffHardVal">${s.difficulty.hard}%</span></div>
+    <div style="font-size:12.5px;color:var(--muted);" id="diffSum"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Previous paper (optional)</h2>
+    <p class="panel-hint">Upload a past paper (PDF, DOCX or image). AI will study its structure and style — not copy its questions — to match the new paper's format.</p>
+    <div class="upload-box" id="uploadBox">
+      <input type="file" id="prevPaperFile" accept=".pdf,.docx,.png,.jpg,.jpeg" style="display:none;">
+      Click to upload, or drag a file here
+    </div>
+    <div id="analysisArea">${state.draft.analysis ? renderAnalysisBox(state.draft.analysis) : ''}</div>
+  </div>
+
+  <div style="display:flex;justify-content:flex-end;gap:10px;">
+    <button class="btn btn-ghost" id="saveDraftBtn">Save draft</button>
+    <button class="btn btn-primary" id="toStep2">Continue to questions →</button>
+  </div>
+  `;
+}
+function renderAnalysisBox(a){
+  return `<div class="analysis-box">
+    <b>Style notes captured from the uploaded paper:</b><br>
+    ${esc(a.styleNotes || a.summary || 'Analyzed successfully.')}
+  </div>`;
+}
+
+/* ---- Step 2: Build questions ---- */
+function renderStepBuild(){
+  const d = state.draft;
+  const sumMarks = d.questions.reduce((a,q)=>a+Number(q.marks||0),0);
+  return `
+  <div class="panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div><h2 style="margin-bottom:4px;">Questions</h2><p class="panel-hint" style="margin-bottom:0;">${d.questions.length} of ${d.setup.numQuestions} added · ${sumMarks} of ${d.setup.totalMarks} marks</p></div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-accent" id="genAllBtn"><span id="genAllSpin"></span>Generate full set with AI</button>
+        <button class="btn" id="addManualBtn">+ Add manually</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Suggest questions by topic</h2>
+    <div class="row" style="align-items:flex-end;">
+      <div class="field"><label class="field-label">Chapter / topic</label>
+        <select id="suggChapter">${d.setup.chapters.map(c=>`<option>${esc(c.name)}</option>`).join('')}</select>
+      </div>
+      <div class="field"><label class="field-label">Type</label>
+        <select id="suggType">${d.setup.types.map(t=>`<option>${t}</option>`).join('')}</select>
+      </div>
+      <div class="field"><label class="field-label">Difficulty</label>
+        <select id="suggDifficulty"><option>Easy</option><option selected>Medium</option><option>Hard</option></select>
+      </div>
+      <div class="field" style="max-width:90px;"><label class="field-label">How many</label><input type="number" id="suggCount" value="4"></div>
+      <div class="field" style="max-width:140px;"><button class="btn btn-primary" id="suggBtn" style="width:100%;justify-content:center;"><span id="suggSpin"></span>Suggest</button></div>
+    </div>
+    <div id="suggResults">${renderSuggestions()}</div>
+  </div>
+
+  <div class="panel">
+    <h2>Paper questions</h2>
+    <div id="qList">${d.questions.length? d.questions.map((q,i)=>renderQCard(q,i)).join('') : `<div class="empty">No questions yet — generate a full set, add suggestions, or add manually.</div>`}</div>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;">
+    <button class="btn btn-ghost" id="backStep1">← Back to setup</button>
+    <button class="btn btn-primary" id="toStep3">Continue to validation →</button>
+  </div>
+  `;
+}
+function renderSuggestions(){
+  if(!state.suggestTopicResults.length) return '';
+  return `<div style="margin-top:14px;">${state.suggestTopicResults.map((q,i)=>`
+    <div class="qcard">
+      <div class="qhead"><span class="qtag">${q.type} · ${q.marks} marks · ${q.difficulty}</span>
+      <button class="btn btn-sm btn-accent" data-add-suggestion="${i}">+ Add to paper</button></div>
+      <div>${esc(q.question)}</div>
+    </div>`).join('')}</div>`;
+}
+function renderQCard(q,i){
+  return `
+  <div class="qcard" data-qidx="${i}">
+    <div class="qhead">
+      <span class="qtag">Q${i+1} · ${esc(q.chapter||'')}</span>
+      <div style="display:flex;gap:6px;">
+        <button class="icon-btn" data-regen="${i}" title="Regenerate with AI">↻</button>
+        <button class="icon-btn btn-danger" data-remove-q="${i}" title="Remove">✕</button>
+      </div>
+    </div>
+    <textarea class="qText" data-field="question" data-idx="${i}">${esc(q.question)}</textarea>
+    <div class="qmeta-row">
+      <select class="qType" data-field="type" data-idx="${i}">${ALL_TYPES.map(t=>`<option ${q.type===t?'selected':''}>${t}</option>`).join('')}</select>
+      <select class="qDiff" data-field="difficulty" data-idx="${i}"><option ${q.difficulty==='Easy'?'selected':''}>Easy</option><option ${q.difficulty==='Medium'?'selected':''}>Medium</option><option ${q.difficulty==='Hard'?'selected':''}>Hard</option></select>
+      <input type="number" class="qMarks" data-field="marks" data-idx="${i}" value="${q.marks}">
+      <select class="qChapter" data-field="chapter" data-idx="${i}">${state.draft.setup.chapters.map(c=>`<option ${q.chapter===c.name?'selected':''}>${esc(c.name)}</option>`).join('')}</select>
+    </div>
+    <div class="answer-toggle" data-toggle-answer="${i}">Show suggested answer</div>
+    <div class="hidden" id="ans-${i}" style="margin-top:6px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:6px;">${esc(q.answerKey||'—')}</div>
+  </div>`;
+}
+
+/* ---- Step 3: Validate ---- */
+function normWords(s){ return new Set((s||'').toLowerCase().replace(/[^a-z0-9\s]/g,'').split(/\s+/).filter(Boolean)); }
+function jaccard(a,b){ const A=normWords(a),B=normWords(b); if(!A.size||!B.size) return 0; let inter=0; A.forEach(w=>{if(B.has(w))inter++;}); return inter/(A.size+B.size-inter); }
+
+function validatePaper(d){
+  const items = [];
+  const s = d.setup;
+  const sumMarks = d.questions.reduce((a,q)=>a+Number(q.marks||0),0);
+  items.push({ok: sumMarks===Number(s.totalMarks), title:'Total marks', detail:`${sumMarks} of ${s.totalMarks} target marks used.`});
+  items.push({ok: d.questions.length===Number(s.numQuestions), title:'Number of questions', detail:`${d.questions.length} of ${s.numQuestions} target questions added.`});
+
+  s.chapters.forEach(c=>{
+    const got = d.questions.filter(q=>q.chapter===c.name).reduce((a,q)=>a+Number(q.marks||0),0);
+    items.push({ok: got===Number(c.marks), title:`${c.name} marks`, detail:`${got} of ${c.marks} target marks.`});
+  });
+
+  const missing = s.chapters.filter(c=>!d.questions.some(q=>q.chapter===c.name));
+  items.push({ok: missing.length===0, title:'Topic coverage', detail: missing.length? `No questions yet for: ${missing.map(c=>c.name).join(', ')}.` : 'Every chapter has at least one question.'});
+
+  const total = d.questions.length||1;
+  const counts = {Easy:0,Medium:0,Hard:0};
+  d.questions.forEach(q=>counts[q.difficulty]=(counts[q.difficulty]||0)+1);
+  const pct = k=>Math.round((counts[k]||0)/total*100);
+  const diffOk = Math.abs(pct('Easy')-s.difficulty.easy)<=15 && Math.abs(pct('Medium')-s.difficulty.medium)<=15 && Math.abs(pct('Hard')-s.difficulty.hard)<=15;
+  items.push({ok: diffOk, title:'Difficulty distribution', detail:`Actual — Easy ${pct('Easy')}%, Medium ${pct('Medium')}%, Hard ${pct('Hard')}% (target Easy ${s.difficulty.easy}%, Medium ${s.difficulty.medium}%, Hard ${s.difficulty.hard}%).`});
+
+  const usedTypes = new Set(d.questions.map(q=>q.type));
+  const unusedAllowed = s.types.filter(t=>!usedTypes.has(t));
+  items.push({ok: unusedAllowed.length<=1, title:'Question type variety', detail: unusedAllowed.length? `Not yet used: ${unusedAllowed.join(', ')}.` : 'Good mix of allowed question types.'});
+
+  let dupFound = [];
+  for(let i=0;i<d.questions.length;i++) for(let j=i+1;j<d.questions.length;j++){
+    if(jaccard(d.questions[i].question, d.questions[j].question) > 0.55) dupFound.push([i+1,j+1]);
+  }
+  items.push({ok: dupFound.length===0, title:'Duplicate questions', detail: dupFound.length? `Questions ${dupFound.map(p=>p.join(' & ')).join(', ')} look very similar.` : 'No near-duplicate questions found.'});
+
+  let simFlag = false;
+  if(d.analysis && d.analysis.rawText){
+    const prevWords = normWords(d.analysis.rawText.slice(0,4000));
+    simFlag = d.questions.some(q=>{
+      const words = (q.question||'').toLowerCase().split(/\s+/);
+      for(let i=0;i+7<words.length;i++){
+        const gram = words.slice(i,i+8).join(' ');
+        if(d.analysis.rawText.toLowerCase().includes(gram)) return true;
+      }
+      return false;
+    });
+  }
+  items.push({ok: !simFlag, title:'Similarity to previous paper', detail: simFlag? 'One or more questions closely match text from the uploaded previous paper — please rephrase.' : (d.analysis? 'No close text overlap with the uploaded previous paper.' : 'No previous paper was uploaded for comparison.')});
+
+  const estMinutes = d.questions.reduce((a,q)=> a + (MIN_PER_MARK[q.type]||2)*Number(q.marks||0), 0);
+  const durOk = Math.abs(estMinutes - s.duration) <= s.duration*0.25;
+  items.push({ok: durOk, title:'Duration check', detail:`Estimated time to complete: ~${Math.round(estMinutes)} min vs a ${s.duration} min exam.`});
+
+  return items;
+}
+function renderStepValidate(){
+  const items = validatePaper(state.draft);
+  const allOk = items.every(i=>i.ok);
+  return `
+  <div class="panel">
+    <h2>${allOk? 'Looking good — ready to export' : 'A few things to double-check'}</h2>
+    <p class="panel-hint">You're always in control — nothing here blocks you from exporting.</p>
+    <div>${items.map(i=>`
+      <div class="valid-item">
+        <span class="valid-icon ${i.ok?'ok':'bad'}">${i.ok?'✓':'!'}</span>
+        <div><div class="valid-title">${i.title}</div><div class="valid-detail">${i.detail}</div></div>
+      </div>`).join('')}</div>
+  </div>
+  <div style="display:flex;justify-content:space-between;">
+    <button class="btn btn-ghost" id="backStep2">← Back to questions</button>
+    <button class="btn btn-primary" id="toStep4">Continue to export →</button>
+  </div>`;
+}
+
+/* ---- Step 4: Export ---- */
+function groupByChapter(qs){
+  const map = {};
+  qs.forEach(q=>{ (map[q.chapter]=map[q.chapter]||[]).push(q); });
+  return map;
+}
+function renderSheetHTML(d){
+  const s = d.setup;
+  const groups = groupByChapter(d.questions);
+  let n = 0;
+  return `
+  <h1>${esc(s.examName||'Examination')}</h1>
+  <div class="meta-line">${esc(s.className)} · ${esc(s.subject)}</div>
+  <div class="meta-line">Duration: ${s.duration} minutes &nbsp;·&nbsp; Total Marks: ${s.totalMarks}</div>
+  <hr>
+  <div class="instructions">Instructions: Answer all questions. Write clearly. Marks for each question are indicated alongside it.</div>
+  ${Object.keys(groups).map(ch=>`
+    <div class="section-h">${esc(ch)}</div>
+    ${groups[ch].map(q=>{ n++; return `<div class="q"><span class="marks">[${q.marks}]</span><span class="qn">${n}.</span> ${esc(q.question)}</div>`; }).join('')}
+  `).join('')}
+  `;
+}
+function renderStepExport(){
+  return `
+  <div class="two-col">
+    <div class="panel">
+      <h2>Preview</h2>
+      <div class="sheet" id="sheetPreview">${renderSheetHTML(state.draft)}</div>
+    </div>
+    <div class="panel">
+      <h2>Export</h2>
+      <p class="panel-hint">Download a print-ready copy, or save your progress.</p>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:10px;" id="exportPdfBtn"><span id="pdfSpin"></span>Export as PDF</button>
+      <button class="btn" style="width:100%;justify-content:center;margin-bottom:10px;" id="exportDocBtn">Export as Word document (.doc)</button>
+      <button class="btn" style="width:100%;justify-content:center;margin-bottom:10px;" id="finalizeBtn">${state.draft.status==='Final'?'Marked as final ✓':'Mark as final'}</button>
+      <button class="btn btn-ghost" style="width:100%;justify-content:center;" id="saveDraftBtn2">Save &amp; close</button>
+    </div>
+  </div>
+  <div style="display:flex;justify-content:flex-start;">
+    <button class="btn btn-ghost" id="backStep3">← Back to validation</button>
+  </div>`;
+}
+
+/* ============================================================
+   MODAL helpers
+   ============================================================ */
+function showModal(innerHTML, wide){
+  closeModal();
+  const bd = document.createElement('div');
+  bd.className = 'modal-backdrop';
+  bd.id = 'modalBackdrop';
+  bd.innerHTML = `<div class="modal ${wide?'wide':''}">${innerHTML}</div>`;
+  bd.addEventListener('mousedown', e=>{ if(e.target===bd) closeModal(); });
+  document.body.appendChild(bd);
+}
+function closeModal(){
+  const el = document.getElementById('modalBackdrop');
+  if(el) el.remove();
+}
+function renderModals(){ return ''; }
+
+/* ============================================================
+   EVENT WIRING
+   ============================================================ */
+function attachGlobalEvents(){
+  document.querySelectorAll('[data-nav]').forEach(el=>{
+    el.onclick = ()=>{ state.view = el.dataset.nav; state.draft = null; render(); };
+  });
+  const navLock = document.getElementById('navLock');
+  if(navLock) navLock.onclick = ()=>{ state.unlocked = false; render(); };
+
+  const addD = document.getElementById('btnAddDeadline');
+  if(addD) addD.onclick = ()=>openDeadlineModal(null);
+
+  const newP = document.getElementById('btnNewPaper');
+  if(newP) newP.onclick = newPaperDraft;
+  const backP = document.getElementById('btnBackPapers');
+  if(backP) backP.onclick = ()=>{ state.draft=null; render(); };
+
+  document.querySelectorAll('[data-open-deadline]').forEach(el=>{
+    el.onclick = ()=>openDeadlineModal(el.dataset.openDeadline);
+  });
+  document.querySelectorAll('[data-open-paper]').forEach(el=>{
+    el.onclick = ()=>openPaper(el.dataset.openPaper);
+  });
+  document.querySelectorAll('[data-dup-paper]').forEach(el=>{
+    el.onclick = (e)=>{ e.stopPropagation();
+      const p = state.papers.find(x=>x.id===el.dataset.dupPaper);
+      const copy = JSON.parse(JSON.stringify(p));
+      copy.id = uid(); copy.status='Draft'; copy.setup.examName = (copy.setup.examName||'Paper')+' (copy)';
+      state.papers.push(copy); savePapers(); render(); toast('Paper duplicated','ok');
+    };
+  });
+  document.querySelectorAll('[data-del-paper]').forEach(el=>{
+    el.onclick = (e)=>{ e.stopPropagation();
+      if(confirm('Delete this exam paper?')){
+        state.papers = state.papers.filter(p=>p.id!==el.dataset.delPaper);
+        savePapers(); render();
+      }
+    };
+  });
+
+  if(state.view==='calendar'){
+    const prev = document.getElementById('calPrev'), next = document.getElementById('calNext');
+    if(prev) prev.onclick = ()=>{ state.calMonth = new Date(state.calMonth.getFullYear(), state.calMonth.getMonth()-1, 1); render(); };
+    if(next) next.onclick = ()=>{ state.calMonth = new Date(state.calMonth.getFullYear(), state.calMonth.getMonth()+1, 1); render(); };
+    document.querySelectorAll('[data-cal-day]').forEach(el=>{
+      el.onclick = ()=>openDayPanel(el.dataset.calDay);
+    });
+  }
+
+  if(state.view==='papers' && state.draft) attachWizardEvents();
+}
+
+function attachWizardEvents(){
+  document.querySelectorAll('[data-step]').forEach(el=>{
+    el.onclick = ()=>{
+      const n = parseInt(el.dataset.step,10);
+      if(state.wizardStep===1){ syncSetupFromDOM(); persistDraft(); }
+      state.wizardStep = n; render();
+    };
+  });
+
+  if(state.wizardStep===1) attachStep1Events();
+  if(state.wizardStep===2) attachStep2Events();
+  if(state.wizardStep===3) attachStep3Events();
+  if(state.wizardStep===4) attachStep4Events();
+}
+
+function syncSetupFromDOM(){
+  const s = state.draft.setup;
+  s.examName = document.getElementById('spExamName').value;
+  s.className = document.getElementById('spClass').value;
+  s.subject = document.getElementById('spSubject').value;
+  s.duration = parseInt(document.getElementById('spDuration').value,10)||0;
+  s.totalMarks = parseInt(document.getElementById('spTotalMarks').value,10)||0;
+  s.numQuestions = parseInt(document.getElementById('spNumQ').value,10)||0;
+  s.chapters = Array.from(document.querySelectorAll('.chapter-row')).map(r=>({
+    name: r.querySelector('.chName').value || 'Untitled',
+    marks: parseInt(r.querySelector('.chMarks').value,10)||0,
+  }));
+  s.types = Array.from(document.querySelectorAll('.typeChk:checked')).map(x=>x.value);
+  s.difficulty = {
+    easy: parseInt(document.getElementById('diffEasy').value,10),
+    medium: parseInt(document.getElementById('diffMedium').value,10),
+    hard: parseInt(document.getElementById('diffHard').value,10),
+  };
+}
+function attachStep1Events(){
+  function updateChapterSum(){
+    const total = Array.from(document.querySelectorAll('.chMarks')).reduce((a,x)=>a+(parseInt(x.value,10)||0),0);
+    const target = parseInt(document.getElementById('spTotalMarks').value,10)||0;
+    const el = document.getElementById('chapterSum');
+    el.textContent = `Chapters total ${total} of ${target} target marks.`;
+    el.style.color = total===target? 'var(--sage)' : 'var(--red)';
+  }
+  function updateDiffSum(){
+    const e=+document.getElementById('diffEasy').value, m=+document.getElementById('diffMedium').value, h=+document.getElementById('diffHard').value;
+    document.getElementById('diffEasyVal').textContent=e+'%';
+    document.getElementById('diffMediumVal').textContent=m+'%';
+    document.getElementById('diffHardVal').textContent=h+'%';
+    const el = document.getElementById('diffSum');
+    const sum = e+m+h;
+    el.textContent = `Total: ${sum}%`+(sum!==100?' — should add up to 100%':'');
+    el.style.color = sum===100? 'var(--sage)':'var(--red)';
+  }
+  document.querySelectorAll('.chMarks, #spTotalMarks').forEach(el=>el.addEventListener('input', updateChapterSum));
+  document.querySelectorAll('#diffEasy,#diffMedium,#diffHard').forEach(el=>el.addEventListener('input', updateDiffSum));
+  updateChapterSum(); updateDiffSum();
+
+  document.getElementById('addChapter').onclick = ()=>{
+    syncSetupFromDOM();
+    state.draft.setup.chapters.push({name:'', marks:0});
+    render();
+  };
+  document.querySelectorAll('.removeChapter').forEach((el,idx)=>{
+    el.onclick = ()=>{
+      syncSetupFromDOM();
+      state.draft.setup.chapters.splice(idx,1);
+      render();
+    };
+  });
+  document.querySelectorAll('.typeChk').forEach(el=>{
+    el.addEventListener('change', ()=>{ el.closest('.check-item').classList.toggle('on', el.checked); });
+  });
+
+  const uploadBox = document.getElementById('uploadBox');
+  const fileInput = document.getElementById('prevPaperFile');
+  uploadBox.onclick = ()=>fileInput.click();
+  fileInput.onchange = async ()=>{
+    const file = fileInput.files[0];
+    if(!file) return;
+    uploadBox.innerHTML = `<span class="spin dark"></span> Analyzing "${esc(file.name)}"…`;
+    try{
+      const analysis = await analyzePreviousPaper(file);
+      state.draft.analysis = analysis;
+      toast('Previous paper analyzed','ok');
+      render();
+    }catch(err){
+      toast(err.message || 'Could not analyze the file.','err');
+      uploadBox.innerHTML = 'Click to upload, or drag a file here';
+    }
+  };
+
+  document.getElementById('saveDraftBtn').onclick = ()=>{ syncSetupFromDOM(); persistDraft(); toast('Draft saved','ok'); };
+  document.getElementById('toStep2').onclick = ()=>{
+    syncSetupFromDOM();
+    if(!state.draft.setup.types.length){ toast('Pick at least one question type.','err'); return; }
+    persistDraft();
+    state.wizardStep = 2; render();
+  };
+}
+
+async function analyzePreviousPaper(file){
+  const name = file.name.toLowerCase();
+  const system = "You analyze exam-paper documents for a teacher tool. Respond with ONLY valid JSON, no markdown, matching: {\"summary\":string,\"sections\":[string],\"questionTypesFound\":[string],\"markDistributionNotes\":string,\"difficultyEstimateNotes\":string,\"topicsCovered\":[string],\"styleNotes\":string,\"instructionsText\":string}";
+  let userContent, rawTextForSimilarity = '';
+
+  if(name.endsWith('.docx')){
+    const buf = await readFileAsArrayBuffer(file);
+    const result = await mammoth.extractRawText({arrayBuffer: buf});
+    rawTextForSimilarity = result.value || '';
+    userContent = [{type:'text', text: "Here is the extracted text of a previous exam paper:\n\n" + rawTextForSimilarity.slice(0,12000) + "\n\nAnalyze it per the schema."}];
+  } else if(name.endsWith('.pdf')){
+    const b64 = await readFileAsBase64(file);
+    userContent = [
+      {type:'document', source:{type:'base64', media_type:'application/pdf', data:b64}},
+      {type:'text', text:'Analyze this exam paper per the schema.'}
+    ];
+  } else {
+    const b64 = await readFileAsBase64(file);
+    const mt = file.type || 'image/png';
+    userContent = [
+      {type:'image', source:{type:'base64', media_type:mt, data:b64}},
+      {type:'text', text:'Analyze this exam paper per the schema.'}
+    ];
+  }
+  const parsed = await claudeJSON(system, userContent, 1500);
+  parsed.rawText = rawTextForSimilarity;
+  return parsed;
+}
+
+function persistDraft(){
+  const idx = state.papers.findIndex(p=>p.id===state.draft.id);
+  const toSave = JSON.parse(JSON.stringify(state.draft));
+  if(toSave.analysis && toSave.analysis.rawText && toSave.analysis.rawText.length>6000){
+    toSave.analysis.rawText = toSave.analysis.rawText.slice(0,6000);
+  }
+  if(idx>=0) state.papers[idx]=toSave; else state.papers.push(toSave);
+  savePapers();
+}
+
+/* ---- Step 2 events ---- */
+function buildGenerationPrompt(count){
+  const s = state.draft.setup;
+  const a = state.draft.analysis;
+  const existing = state.draft.questions.map(q=>q.question).join(' | ');
+  return `Create ${count} exam questions for a "${s.examName||'exam'}" — Class/Grade: ${s.className}, Subject: ${s.subject}.
+Total paper marks target: ${s.totalMarks}. Duration: ${s.duration} minutes.
+Chapters and target marks:
+${s.chapters.map(c=>`- ${c.name}: ${c.marks} marks`).join('\n')}
+Allowed question types: ${s.types.join(', ')}.
+Target difficulty split: Easy ${s.difficulty.easy}%, Medium ${s.difficulty.medium}%, Hard ${s.difficulty.hard}%.
+${a? `Style reference from a previous paper — match its structure, phrasing style, instructions and formatting, but do NOT reuse or closely paraphrase its actual questions:\nSummary: ${a.summary||''}\nStyle notes: ${a.styleNotes||''}\nTopics covered previously: ${(a.topicsCovered||[]).join(', ')}` : ''}
+${existing? `Avoid duplicating the meaning of these already-included questions:\n${existing}` : ''}
+
+Return ONLY a JSON array of ${count} objects, each with exactly these fields:
+id (short random string), chapter (must match one of the chapter names above), type (one of the allowed types), marks (integer), difficulty ("Easy"|"Medium"|"Hard"), question (the full question text; for MCQ include four options labelled A–D inline), answerKey (a brief correct answer or key marking points).
+Distribute chapter and difficulty as close to the targets as possible across all questions combined.`;
+}
+function attachStep2Events(){
+  document.getElementById('addManualBtn').onclick = ()=>{
+    state.draft.questions.push({id:uid(), chapter:state.draft.setup.chapters[0]?.name||'', type:state.draft.setup.types[0]||'Short Answer', difficulty:'Medium', marks:1, question:'', answerKey:''});
+    persistDraft(); render();
+  };
+  document.getElementById('genAllBtn').onclick = async (e)=>{
+    const btn = e.currentTarget; btn.disabled = true;
+    document.getElementById('genAllSpin').innerHTML = '<span class="spin"></span> ';
+    try{
+      const need = Math.max(1, state.draft.setup.numQuestions - state.draft.questions.length);
+      const system = "You are an expert exam-question writer for teachers. Respond with ONLY a valid JSON array, no markdown, no commentary.";
+      const result = await claudeJSON(system, buildGenerationPrompt(need), 4000);
+      const list = Array.isArray(result) ? result : (result.questions || []);
+      list.forEach(q=>{
+        state.draft.questions.push({
+          id: uid(), chapter: q.chapter || state.draft.setup.chapters[0]?.name, type: q.type || state.draft.setup.types[0],
+          difficulty: q.difficulty || 'Medium', marks: Number(q.marks)||1, question: q.question || '', answerKey: q.answerKey || ''
+        });
+      });
+      persistDraft(); render();
+      toast(`Added ${list.length} AI-generated questions`, 'ok');
+    }catch(err){
+      toast(err.message || 'Could not generate questions.', 'err');
+      btn.disabled = false; document.getElementById('genAllSpin').innerHTML='';
+    }
+  };
+
+  document.getElementById('suggBtn').onclick = async (e)=>{
+    const btn = e.currentTarget; btn.disabled = true;
+    document.getElementById('suggSpin').innerHTML = '<span class="spin"></span> ';
+    try{
+      const chapter = document.getElementById('suggChapter').value;
+      const type = document.getElementById('suggType').value;
+      const difficulty = document.getElementById('suggDifficulty').value;
+      const count = parseInt(document.getElementById('suggCount').value,10)||3;
+      const system = "You suggest exam questions for teachers. Respond with ONLY a valid JSON array, no markdown.";
+      const prompt = `Suggest ${count} "${type}" questions on the topic "${chapter}" for ${state.draft.setup.className} ${state.draft.setup.subject}, difficulty level ${difficulty}. Each object needs: chapter, type, marks (a reasonable integer for this type), difficulty, question, answerKey. Return ONLY the JSON array.`;
+      const result = await claudeJSON(system, prompt, 2000);
+      state.suggestTopicResults = Array.isArray(result) ? result : (result.questions||[]);
+      render();
+    }catch(err){
+      toast(err.message || 'Could not fetch suggestions.', 'err');
+    }
+    btn.disabled = false;
+  };
+
+  document.querySelectorAll('[data-add-suggestion]').forEach(el=>{
+    el.onclick = ()=>{
+      const q = state.suggestTopicResults[parseInt(el.dataset.addSuggestion,10)];
+      state.draft.questions.push({id:uid(), chapter:q.chapter, type:q.type, difficulty:q.difficulty, marks:Number(q.marks)||1, question:q.question, answerKey:q.answerKey||''});
+      persistDraft(); render();
+      toast('Question added to paper','ok');
+    };
+  });
+
+  document.querySelectorAll('.qText,.qType,.qDiff,.qMarks,.qChapter').forEach(el=>{
+    el.addEventListener('change', ()=>{
+      const idx = parseInt(el.dataset.idx,10);
+      const field = el.dataset.field;
+      let val = el.value;
+      if(field==='marks') val = parseInt(val,10)||0;
+      state.draft.questions[idx][field] = val;
+      persistDraft();
+    });
+  });
+  document.querySelectorAll('[data-remove-q]').forEach(el=>{
+    el.onclick = ()=>{
+      state.draft.questions.splice(parseInt(el.dataset.removeQ,10),1);
+      persistDraft(); render();
+    };
+  });
+  document.querySelectorAll('[data-toggle-answer]').forEach(el=>{
+    el.onclick = ()=>{
+      const box = document.getElementById('ans-'+el.dataset.toggleAnswer);
+      box.classList.toggle('hidden');
+      el.textContent = box.classList.contains('hidden') ? 'Show suggested answer' : 'Hide suggested answer';
+    };
+  });
+  document.querySelectorAll('[data-regen]').forEach(el=>{
+    el.onclick = async ()=>{
+      const idx = parseInt(el.dataset.regen,10);
+      const old = state.draft.questions[idx];
+      el.innerHTML = '<span class="spin dark"></span>';
+      try{
+        const system = "You write a single replacement exam question. Respond with ONLY one valid JSON object, no markdown.";
+        const prompt = `Write one replacement question for a ${state.draft.setup.subject} exam (${state.draft.setup.className}). It must be about "${old.chapter}", type "${old.type}", difficulty "${old.difficulty}", worth ${old.marks} marks. It must be clearly different from this existing question: "${old.question}". Return ONLY a JSON object with fields: chapter, type, marks, difficulty, question, answerKey.`;
+        const q = await claudeJSON(system, prompt, 800);
+        state.draft.questions[idx] = {id:old.id, chapter:q.chapter||old.chapter, type:q.type||old.type, difficulty:q.difficulty||old.difficulty, marks:Number(q.marks)||old.marks, question:q.question, answerKey:q.answerKey||''};
+        persistDraft(); render();
+      }catch(err){ toast(err.message || 'Could not regenerate.', 'err'); el.innerHTML='↻'; }
+    };
+  });
+
+  document.getElementById('backStep1').onclick = ()=>{ state.wizardStep=1; render(); };
+  document.getElementById('toStep3').onclick = ()=>{ state.wizardStep=3; render(); };
+}
+
+function attachStep3Events(){
+  document.getElementById('backStep2').onclick = ()=>{ state.wizardStep=2; render(); };
+  document.getElementById('toStep4').onclick = ()=>{ state.wizardStep=4; render(); };
+}
+
+function attachStep4Events(){
+  document.getElementById('backStep3').onclick = ()=>{ state.wizardStep=3; render(); };
+  document.getElementById('finalizeBtn').onclick = ()=>{
+    state.draft.status = 'Final'; persistDraft(); render(); toast('Paper marked final','ok');
+  };
+  document.getElementById('saveDraftBtn2').onclick = ()=>{
+    persistDraft(); state.draft = null; render(); toast('Saved','ok');
+  };
+  document.getElementById('exportPdfBtn').onclick = async (e)=>{
+    const btn = e.currentTarget; btn.disabled = true;
+    document.getElementById('pdfSpin').innerHTML = '<span class="spin"></span> ';
+    try{
+      const node = document.getElementById('sheetPreview');
+      const canvas = await html2canvas(node, {scale:2, backgroundColor:'#ffffff'});
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF('p','pt','a4');
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      const imgW = pageW;
+      const imgH = canvas.height * imgW / canvas.width;
+      let heightLeft = imgH, position = 0;
+      const imgData = canvas.toDataURL('image/png');
+      pdf.addImage(imgData, 'PNG', 0, position, imgW, imgH);
+      heightLeft -= pageH;
+      while(heightLeft > 0){
+        position = heightLeft - imgH;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgW, imgH);
+        heightLeft -= pageH;
+      }
+      pdf.save((state.draft.setup.examName||'exam-paper').replace(/[^a-z0-9]+/gi,'-')+'.pdf');
+    }catch(err){ toast('Could not export PDF: '+err.message, 'err'); }
+    btn.disabled = false; document.getElementById('pdfSpin').innerHTML='';
+  };
+  document.getElementById('exportDocBtn').onclick = ()=>{
+    const content = document.getElementById('sheetPreview').innerHTML;
+    const html = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+    <head><meta charset="utf-8"><title>${esc(state.draft.setup.examName||'Exam Paper')}</title>
+    <style>body{font-family:Georgia,serif;} .marks{float:right;font-family:Arial,sans-serif;font-size:11px;} .instructions{font-family:Arial,sans-serif;font-size:11px;border:1px solid #ccc;padding:8px;} .section-h{font-weight:bold;margin-top:16px;}</style>
+    </head><body>${content}</body></html>`;
+    const blob = new Blob(['\ufeff', html], {type:'application/msword'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = (state.draft.setup.examName||'exam-paper').replace(/[^a-z0-9]+/gi,'-')+'.doc';
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    toast('Word document downloaded','ok');
+  };
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+(async function init(){
+  await loadAll();
+  render();
+})();
+</script>
+</body>
+</html>

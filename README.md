@@ -1,60 +1,52 @@
-# OBLIVION
-Teacher AI Assistant
-Team No.
+# FacultyHub — Teacher AI Assistant
 
-Team 4
+A free, local, single-user teacher management web app backed by **Ollama** (no OpenAI key, no per-request AI charges). It manages students, classes, projects, exam papers and uses local AI to:
 
-Team Members
-Aryan BR
-Sathyaprasad
-Deeraj
-Description
+- draft a "today's teaching summary" on the dashboard
+- suggest exam questions by topic
+- generate full exam papers from topics, structure and difficulty
 
-Teacher AI Assistant is an all-in-one web application that helps teachers manage students, classes, projects, deadlines, submissions, and exam papers. It also uses local AI through Ollama to generate questions, complete exam papers, and teaching summaries.
+The dashboard "Generate" button has been removed; the AI summary now runs automatically as a background job.
 
-Problem Statement
+## Quick start (Windows)
 
-Teachers often have to manage student records, assignments, deadlines, classes, and examination preparation using multiple tools. This can be time-consuming and difficult to organize. Our project provides a single platform to simplify these academic management tasks.
+```
+run.bat
+```
 
-Objective
+The script creates a virtualenv, installs dependencies, downloads `qwen2.5:7b` the first time, opens the firewall for LAN access, and starts the app at http://127.0.0.1:5000.
 
-To develop a user-friendly teacher management system that:
+To open the app from another device on the same Wi-Fi, use the URL printed at startup (e.g. `http://192.168.1.42:5000`).
 
-Manages students and classes.
-Tracks projects, deadlines, and submissions.
-Generates exam questions and question papers using AI.
-Provides a centralized dashboard for teachers.
-Works across devices on the same local network.
-Technology Used
-Frontend: HTML, CSS, JavaScript
-Backend: Python, Flask
-Database: SQLite
-AI: Ollama (Local AI)
-PDF: Python PDF generation
-Networking: Local Wi-Fi / LAN
+## Requirements
 
-On Windows run run.bat
+- Python 3.11+
+- Ollama (download from https://ollama.com/download/windows)
+- ~5 GB disk for the model
 
-Project Link
+`requirements.txt`:
 
-GitHub: (https://github.com/Deeraj99/OBLIVION)
-<img width="1917" height="1013" alt="image" src="https://github.com/user-attachments/assets/a9b3050e-a788-4474-9efa-7986d1ede3b0" />
-<img width="1917" height="1013" alt="image" src="https://github.com/user-attachments/assets/309a52b8-6d2d-49e9-a320-fd700e6a4f70" />
-<img width="1917" height="1012" alt="image" src="https://github.com/user-attachments/assets/9ae1dfe9-9e2c-4476-b65a-f9ba928d451c" />
-<img width="1917" height="1006" alt="image" src="https://github.com/user-attachments/assets/a13594ff-6bcd-437f-84bc-2fb6f487f742" />
-<img width="1917" height="1016" alt="image" src="https://github.com/user-attachments/assets/c34e4344-fc9c-443d-8bfc-972dd3dc52e0" />
-<img width="1917" height="1015" alt="image" src="https://github.com/user-attachments/assets/20b1b118-f811-4461-84d9-12033fcc36e9" />
-<img width="1912" height="1010" alt="image" src="https://github.com/user-attachments/assets/8ee608fc-f1db-4dd9-992c-01ca3e4021ed" />
-<img width="1917" height="1011" alt="image" src="https://github.com/user-attachments/assets/82027afc-a5ab-4e6c-afe8-4d1dc903e361" />
-<img width="1917" height="1013" alt="image" src="https://github.com/user-attachments/assets/0a6caa32-676f-4e58-936c-1f3a8e337292" />
-<img width="1917" height="1010" alt="image" src="https://github.com/user-attachments/assets/083dc56b-f423-4c5f-9924-639d8fe0b5ce" />
+```
+Flask>=3.1,<4
+python-dotenv>=1.0,<2
+requests>=2.32,<3
+reportlab>=4.2,<5
+```
 
+## Running the test suite
 
+```
+.venv\Scripts\python.exe -m unittest discover -s tests -t .
+```
 
+Tests use a temporary SQLite database and mock Ollama, so they do not require the model to be downloaded.
 
+## Background jobs
 
+All AI calls run through a thread-safe job manager (`services/job_manager.py`).
 
-
-
-
-
+- Jobs are stored in the `ai_jobs` SQLite table.
+- Concurrent jobs are capped (default 2) and duplicates are deduplicated by a key.
+- States: `queued`, `running`, `completed`, `failed`, `cancelled`.
+- The UI polls `/api/ai/jobs/<id>` every 1.5 s and never blocks the browser while Ollama is thinking.
+- Completed jobs are cleaned up after 30 minutes.

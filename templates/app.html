@@ -1,0 +1,1043 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FacultyHub - Teacher AI Assistant</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232563EB'/%3E%3Ctext x='50%25' y='62%25' text-anchor='middle' font-family='sans-serif' font-size='18' font-weight='700' fill='white'%3EF%3C/text%3E%3C/svg%3E">
+<style>
+:root{--primary:#0F172A;--blue:#2563EB;--indigo:#4F46E5;--bg:#F8FAFC;--card:#FFF;--text:#1E293B;--muted:#64748B;--border:#E2E8F0;--success:#10B981;--warn:#F59E0B;--error:#EF4444;--radius:12px;--shadow:0 2px 8px rgba(15,23,42,.05)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:14px;line-height:1.5}button,input,select,textarea{font:inherit}button{cursor:pointer}
+.app{min-height:100vh;display:flex}.sidebar{width:250px;background:var(--primary);color:#fff;padding:22px 14px;display:flex;flex-direction:column;gap:6px;position:fixed;inset:0 auto 0 0;overflow:auto}.brand{padding:2px 12px 26px;display:flex;align-items:center;gap:10px}.brand-mark{height:34px;width:34px;border-radius:10px;background:var(--blue);display:grid;place-items:center;font-weight:800;color:#fff}.brand-name{font-weight:750;font-size:19px}.nav-group{font-size:10px;color:#94A3B8;font-weight:700;text-transform:uppercase;padding:16px 12px 6px}.nav{display:flex;align-items:center;gap:11px;padding:10px 12px;border:1px solid transparent;color:#CBD5E1;border-radius:9px;cursor:pointer}.nav:hover{background:rgba(255,255,255,.06);color:#fff}.nav.active{background:rgba(37,99,235,.22);color:#fff;border-color:rgba(96,165,250,.2)}.side-bottom{margin-top:auto;border-top:1px solid rgba(255,255,255,.1);padding:14px 12px;color:#CBD5E1}.who{font-weight:700;color:#fff}.role{font-size:12px;color:#94A3B8;margin-top:2px}
+.main{margin-left:250px;min-width:0;flex:1}.topbar{height:80px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 30px;position:sticky;top:0;z-index:10}.page-title{font-size:24px;font-weight:750}.page-sub{color:var(--muted);font-size:13px;margin-top:2px}.top-actions{display:flex;gap:8px;align-items:center}.content{padding:28px 30px 60px;max-width:1440px}
+.btn{border:1px solid var(--border);background:#fff;color:var(--text);padding:9px 13px;border-radius:9px;font-weight:650;font-size:13px}.btn:hover{border-color:#CBD5E1}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}.btn.primary:hover{background:#1D4ED8}.btn.danger{color:var(--error)}.btn:disabled{opacity:.55;cursor:not-allowed}
+.grid-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}.stat{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:17px 18px}.stat .num{font-size:28px;font-weight:800}.stat .label{color:var(--muted);font-size:12px;margin-top:4px}.stat.blue .num{color:var(--blue)}.stat.green .num{color:var(--success)}.stat.amber .num{color:var(--warn)}
+.grid-two{display:grid;grid-template-columns:1.4fr 1fr;gap:18px}.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:18px;overflow:hidden}.card-head{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px}.card-title{font-size:16px;font-weight:750}.card-sub{color:var(--muted);font-size:12px;margin-top:2px}.card-body{padding:18px 20px}.row{display:flex;align-items:center;gap:12px;padding:13px 2px;border-bottom:1px solid var(--border)}.row:last-child{border-bottom:none}.row-main{flex:1;min-width:0}.row-title{font-weight:700}.row-meta{color:var(--muted);font-size:12px;margin-top:2px}.chip{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:#EFF6FF;color:#1D4ED8;font-size:11px;font-weight:750}.chip.green{background:#ECFDF5;color:#047857}.chip.amber{background:#FFFBEB;color:#B45309}.chip.red{background:#FEF2F2;color:#B91C1C}.progress{height:7px;background:#F1F5F9;border-radius:99px;overflow:hidden;margin-top:8px}.progress>span{display:block;height:100%;background:var(--blue);border-radius:inherit}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.form-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}.field label{display:block;color:var(--muted);font-size:12px;font-weight:700;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;border:1px solid var(--border);background:#fff;color:var(--text);padding:10px 11px;border-radius:8px;outline:none}.field input:focus,.field select:focus,.field textarea:focus{border-color:#93C5FD}.field textarea{min-height:88px;resize:vertical}.form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;flex-wrap:wrap}.helper{font-size:12px;color:var(--muted)}
+.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse}.table th{text-align:left;color:var(--muted);font-size:11px;text-transform:uppercase;padding:11px 12px;border-bottom:1px solid var(--border)}.table td{padding:12px;border-bottom:1px solid var(--border)}.table tr:hover td{background:#FAFCFF}.searchbar{display:flex;gap:8px;flex-wrap:wrap}.searchbar input,.searchbar select{border:1px solid var(--border);border-radius:9px;padding:9px 11px;background:#fff}.grow{flex:1;min-width:220px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:18px;overflow-x:auto}.tab{padding:10px 12px;color:var(--muted);font-weight:700;border-bottom:2px solid transparent;background:none;border-left:0;border-right:0;border-top:0;cursor:pointer;white-space:nowrap}.tab.active{color:var(--blue);border-color:var(--blue)}
+.question{border:1px solid var(--border);border-radius:10px;padding:14px 15px;margin-bottom:10px;background:#fff}.q-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.q-tags{display:flex;gap:6px;flex-wrap:wrap}.q-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}.muted{color:var(--muted)}.paper-preview{background:#fff;border:1px solid var(--border);padding:38px;min-height:700px}.paper-preview h2{text-align:center;margin:0 0 5px;font-size:20px}.paper-preview .center{text-align:center;color:#475569}.paper-section{font-weight:800;margin:20px 0 8px}.paper-q{padding:7px 0;font-size:14px}.paper-q .marks{float:right;color:#475569;font-size:12px}
+.modal-back{position:fixed;inset:0;background:rgba(2,6,23,.52);display:flex;align-items:center;justify-content:center;padding:18px;z-index:100}.modal{width:min(760px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:14px}.modal.wide{width:min(1100px,100%)}.modal-head{padding:17px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}.modal-body{padding:20px}.close{border:0;background:transparent;font-size:24px;color:var(--muted)}
+.toast-wrap{position:fixed;right:20px;bottom:20px;z-index:200;display:flex;flex-direction:column;gap:8px}.toast{background:var(--primary);color:#fff;padding:11px 14px;border-radius:9px;font-size:13px}.toast.ok{background:var(--success)}.toast.err{background:var(--error)}.empty{text-align:center;padding:36px 15px;color:var(--muted)}.empty strong{display:block;color:var(--text);font-size:17px;margin-bottom:4px}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);border:1px solid var(--border);border-radius:10px;overflow:hidden}.cal-head{background:var(--primary);color:#fff;padding:9px;text-align:center;font-weight:700;font-size:12px}.cal-cell{min-height:105px;background:#fff;border-right:1px solid var(--border);border-top:1px solid var(--border);padding:8px}.cal-cell:nth-child(7n){border-right:0}.cal-num{font-weight:750;font-size:12px}.dot{height:7px;width:7px;border-radius:50%;display:inline-block;background:var(--blue);margin:4px 3px 0 0}.dot.warn{background:var(--warn)}.dot.green{background:var(--success)}
+.notice{padding:12px 14px;border:1px solid #BFDBFE;background:#EFF6FF;color:#1E40AF;border-radius:10px;margin-bottom:16px}.warning{padding:12px 14px;border:1px solid #FCD34D;background:#FFFBEB;color:#92400E;border-radius:10px}.two-btns{display:flex;gap:8px;flex-wrap:wrap}.check-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;max-height:260px;overflow:auto;border:1px solid var(--border);border-radius:10px;padding:8px}.check{display:flex;gap:8px;align-items:center;padding:9px;border:1px solid var(--border);border-radius:8px;background:#fff}.status-select{min-width:150px}
+@media(max-width:1050px){.sidebar{width:220px}.main{margin-left:220px}.grid-stats{grid-template-columns:repeat(2,1fr)}.grid-two{grid-template-columns:1fr}.form-grid.three{grid-template-columns:1fr}}
+@media(max-width:760px){.sidebar{position:fixed;transform:translateX(-100%);z-index:50}.sidebar.open{transform:none}.main{margin-left:0}.topbar{padding:0 16px}.content{padding:18px 16px}.grid-stats{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.check-list{grid-template-columns:1fr}body{font-size:14px;overflow-x:hidden}.app{display:block}.main{width:100%;min-width:0}.topbar{height:auto;min-height:68px;padding:12px}.topbar>div:first-child{min-width:0;flex:1}.page-title{font-size:19px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.page-sub{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.top-actions #localBadge{display:none}.top-actions #menuBtn{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;padding:0;border:1px solid var(--border);background:#fff;border-radius:10px;font-size:20px}.content{padding:14px 12px 40px}.grid-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:12px}.stat{padding:13px 12px}.stat .num{font-size:23px}.grid-two{grid-template-columns:1fr;gap:12px}.card{margin-bottom:12px;border-radius:10px}.card-head{padding:13px 14px}.card-body{padding:14px}.form-grid,.form-grid.three{grid-template-columns:1fr;gap:10px}.field input,.field select,.field textarea{padding:11px 10px;font-size:14px}.form-actions{flex-direction:column}.form-actions .btn{width:100%}.two-btns{width:100%}.two-btns .btn{flex:1}.searchbar{display:grid;grid-template-columns:1fr 1fr;gap:8px}.searchbar .grow{grid-column:1/-1}.searchbar .btn{width:100%}.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}.table{min-width:680px}.question{padding:12px}.q-top{flex-direction:column}.q-actions{display:grid;grid-template-columns:1fr;gap:7px}.q-actions .btn{width:100%}.tab{padding:9px 10px;font-size:12px}.paper-preview{padding:20px 14px;min-height:auto}}
+@media(max-width:420px){.grid-stats{grid-template-columns:1fr 1fr}.stat .num{font-size:21px}.card-head{flex-direction:column}.card-head>.btn,.card-head>.two-btns{width:100%}.card-head>.two-btns .btn{width:100%}.searchbar{grid-template-columns:1fr}.modal-back{padding:4px}.modal,.modal.wide{max-height:98vh;border-radius:10px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+  <div class="brand"><div class="brand-mark">F</div><div class="brand-name">FacultyHub</div></div>
+  <div class="nav-group">Main</div>
+  <div class="nav" data-view="dashboard"><span>Dashboard</span></div>
+  <div class="nav" data-view="classes"><span>Classes</span></div>
+  <div class="nav" data-view="question-generator"><span>AI Question Generator</span></div>
+  <div class="nav" data-view="exam-generator"><span>AI Exam Paper Generator</span></div>
+  <div class="nav" data-view="projects"><span>Projects and Deadlines</span></div>
+  <div class="nav" data-view="students"><span>Students</span></div>
+  <div class="nav" data-view="history"><span>History</span></div>
+  <div class="nav-group">Other</div>
+  <div class="nav" data-view="calendar"><span>Calendar</span></div>
+  <div class="nav" data-view="settings"><span>Settings</span></div>
+  <div class="side-bottom"><div class="who" id="sideTeacher">Teacher</div><div class="role" id="sideSchool">Teacher workspace</div></div>
+</aside>
+<main class="main">
+  <header class="topbar"><div><div class="page-title" id="pageTitle">Dashboard</div><div class="page-sub" id="pageSub">Today's overview</div></div><div class="top-actions"><span class="chip" id="localBadge">Wi-Fi ready</span><button class="btn ghost" id="menuBtn">=</button><button class="btn primary" id="headerAction">+ Add Class</button></div></header>
+  <section class="content" id="content"></section>
+</main>
+</div>
+<div id="modalRoot"></div><div class="toast-wrap" id="toastWrap"></div>
+</body>
+</html><script>
+"use strict";
+const APP = { view: 'dashboard', meta: { departments: [], semesters: [] }, teacher: null, projectDetail: null, examDraft: null };
+const TITLES = {
+  dashboard: ['Dashboard', "Today's overview across classes and projects"],
+  classes: ['Classes', 'Manage your teaching schedule'],
+  'question-generator': ['AI Question Generator', 'Generate and personally select questions'],
+  'exam-generator': ['AI Exam Paper Generator', 'Build, review and export complete papers'],
+  projects: ['Projects and Deadlines', 'Track active assignments and submissions'],
+  students: ['Students', 'Manage students and contact details'],
+  history: ['History', 'Closed projects and historical records'],
+  calendar: ['Calendar', 'Deadlines, projects and classes'],
+  settings: ['Settings', 'Teacher profile, local network and integrations']
+};
+const qsa = (s, root) => Array.prototype.slice.call((root || document).querySelectorAll(s));
+const qs = (s, root) => (root || document).querySelector(s);
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
+
+async function api(url, opts) {
+  opts = opts || {};
+  const init = Object.assign({ headers: {} }, opts);
+  if (init.body && !(init.body instanceof FormData) && !init.headers['Content-Type']) {
+    init.headers['Content-Type'] = 'application/json';
+  }
+  const r = await fetch(url, init);
+  let j = null;
+  try { j = await r.json(); } catch (e) { /* no body */ }
+  if (!r.ok) {
+    const err = new Error((j && j.error) || ('Request failed (' + r.status + ')'));
+    err.code = j && j.code;
+    err.status = r.status;
+    throw err;
+  }
+  return j;
+}
+
+function toast(msg, type) {
+  const el = document.createElement('div');
+  el.className = 'toast ' + (type || '');
+  el.textContent = msg;
+  qs('#toastWrap').appendChild(el);
+  setTimeout(function () { el.remove(); }, 3800);
+}
+
+function nav(view) {
+  APP.view = view;
+  qsa('.nav').forEach(function (n) { n.classList.toggle('active', n.dataset.view === view); });
+  render();
+}
+
+function modal(html, wide) {
+  qs('#modalRoot').innerHTML = '<div class="modal-back"><div class="modal ' + (wide ? 'wide' : '') + '">' + html + '</div></div>';
+  qs('#modalRoot .modal-back').addEventListener('click', function (e) {
+    if (e.target === e.currentTarget) closeModal();
+  });
+}
+function closeModal() { qs('#modalRoot').innerHTML = ''; }
+
+function field(label, name, value, type, opts) {
+  value = value == null ? '' : value;
+  type = type || 'text';
+  opts = opts || [];
+  if (type === 'select') {
+    return '<div class="field"><label>' + esc(label) + '</label><select id="f_' + name + '">' +
+      opts.map(function (o) { return '<option ' + (String(o) === String(value) ? 'selected' : '') + '>' + esc(o) + '</option>'; }).join('') +
+      '</select></div>';
+  }
+  if (type === 'textarea') {
+    return '<div class="field"><label>' + esc(label) + '</label><textarea id="f_' + name + '">' + esc(value) + '</textarea></div>';
+  }
+  return '<div class="field"><label>' + esc(label) + '</label><input id="f_' + name + '" type="' + type + '" value="' + esc(value) + '"></div>';
+}
+
+function readFields(fields) {
+  const o = {};
+  fields.forEach(function (k) {
+    const el = qs('#f_' + k);
+    o[k] = el ? el.value : '';
+  });
+  return o;
+}
+</script>
+<script>
+async function boot() {
+  const meta = await api('/api/meta');
+  const settings = await api('/api/settings');
+  APP.meta = meta;
+  APP.teacher = settings.teacher;
+  qs('#sideTeacher').textContent = settings.teacher.name;
+  qs('#sideSchool').textContent = settings.teacher.school || settings.teacher.department || 'Teacher workspace';
+  qs('#localBadge').textContent = 'Wi-Fi: ' + settings.local_ip + ':' + (location.port || '5000');
+  qsa('.nav').forEach(function (n) {
+    n.onclick = function () {
+      nav(n.dataset.view);
+      if (window.innerWidth <= 760) qs('#sidebar').classList.remove('open');
+    };
+  });
+  qs('#menuBtn').onclick = function () { qs('#sidebar').classList.toggle('open'); };
+  render();
+}
+
+function actionFor() {
+  const v = APP.view;
+  const btn = qs('#headerAction');
+  btn.style.display = ['dashboard', 'classes', 'projects', 'students'].indexOf(v) >= 0 ? 'inline-flex' : 'none';
+  btn.textContent = v === 'students' ? '+ Add Student' : (v === 'projects' ? '+ New Project' : '+ Add Class');
+  btn.onclick = function () {
+    if (v === 'students') studentModal();
+    else if (v === 'projects') projectModal();
+    else classModal();
+  };
+}
+
+function render() {
+  const t = TITLES[APP.view];
+  qs('#pageTitle').textContent = t[0];
+  qs('#pageSub').textContent = t[1];
+  actionFor();
+  const handlers = {
+    dashboard: renderDashboard,
+    classes: renderClasses,
+    'question-generator': renderQuestionGenerator,
+    'exam-generator': renderExamGenerator,
+    projects: renderProjects,
+    students: renderStudents,
+    history: renderHistory,
+    calendar: renderCalendar,
+    settings: renderSettings
+  };
+  handlers[APP.view]();
+}
+
+// Background-job helpers (every AI endpoint is async on the server now).
+const JOB_POLL_MS = 1500;
+
+function pollJob(jobId, onUpdate) {
+  return new Promise(function (resolve) {
+    let done = false;
+    function tick() {
+      if (done) return;
+      api('/api/ai/jobs/' + jobId).then(function (job) {
+        if (onUpdate) onUpdate(job);
+        if (job.status === 'completed' || job.status === 'failed' || job.status === 'cancelled') {
+          done = true; resolve(job); return;
+        }
+        setTimeout(tick, JOB_POLL_MS);
+      }).catch(function () { setTimeout(tick, JOB_POLL_MS); });
+    }
+    tick();
+  });
+}
+
+function describeJobError(err) {
+  const code = err && err.code;
+  const message = err && err.message ? err.message : 'Generation failed.';
+  switch (code) {
+    case 'not_configured': return 'Local AI is not configured. Set AI_PROVIDER=ollama and OLLAMA_MODEL in .env.';
+    case 'connection': return 'Could not connect to Ollama. Make sure Ollama is running on the configured address.';
+    case 'model_missing': return 'The selected Ollama model is not installed. Run: ollama pull <model>.';
+    case 'timeout': return 'AI generation timed out. Try a shorter prompt or a smaller model.';
+    case 'empty': return 'Ollama returned an empty response. Please retry.';
+    case 'bad_json': return 'The local AI returned invalid JSON. Please retry.';
+    case 'bad_response': return 'Ollama returned an unexpected response format.';
+    case 'invalid_input': return message.replace(/^[a-z_]+:\s*/, '');
+    default: return message.replace(/^[a-z_]+:\s*/, '');
+  }
+}
+
+async function cancelJob(jobId) {
+  try { await api('/api/ai/jobs/' + jobId + '/cancel', { method: 'POST' }); } catch (e) { /* ignore */ }
+}
+
+// Dashboard summary - auto-generated as a background job, NO manual button.
+let summaryJobId = null;
+
+function renderDashboardSummary(classes) {
+  const status = qs('#summaryStatus');
+  const box = qs('#summaryBox');
+  const sub = qs('#summarySub');
+  if (!status || !box) return;
+  if (!classes || !classes.length) {
+    status.textContent = 'No classes today';
+    status.className = 'chip';
+    if (sub) sub.textContent = 'No teaching scheduled for today.';
+    return;
+  }
+  status.textContent = 'Generating';
+  status.className = 'chip amber';
+  if (sub) sub.textContent = 'Local AI is preparing a briefing in the background.';
+  if (summaryJobId) cancelJob(summaryJobId);
+  api('/api/ai/summary', { method: 'POST', body: JSON.stringify({ classes: classes }) })
+    .then(function (snap) {
+      summaryJobId = snap.id;
+      return pollJob(snap.id, function (job) {
+        if (job.status === 'running') { status.textContent = 'Generating'; status.className = 'chip amber'; }
+        else if (job.status === 'queued') { status.textContent = 'Queued'; status.className = 'chip'; }
+        else if (job.status === 'completed') {
+          const text = (job.result && job.result.summary) || 'No summary returned.';
+          box.innerHTML = '<div class="notice">' + esc(text).replace(/\n/g, '<br>') + '</div>';
+          status.textContent = 'Ready';
+          status.className = 'chip green';
+          if (sub) sub.textContent = 'AI briefing for today.';
+        } else if (job.status === 'failed' || job.status === 'cancelled') {
+          const m = (job.error || '').match(/^([a-z_]+):\s*(.*)$/);
+          const code = m ? m[1] : null;
+          const msg = m ? m[2] : (job.error || 'AI summary failed.');
+          const friendly = describeJobError({ code: code, message: msg });
+          box.innerHTML = '<div class="warning">' + esc(friendly) + '</div>';
+          status.textContent = 'AI unavailable';
+          status.className = 'chip red';
+          if (sub) sub.textContent = "Showing today's classes only. Local AI is offline or busy.";
+        }
+      });
+    })
+    .catch(function (err) {
+      status.textContent = 'AI unavailable';
+      status.className = 'chip red';
+      if (sub) sub.textContent = "Showing today's classes only.";
+      box.innerHTML = '<div class="warning">' + esc(describeJobError(err)) + '</div>';
+    });
+}
+</script>
+<script>
+async function renderDashboard() {
+  const d = await api('/api/dashboard');
+  const statsHtml =
+    '<div class="grid-stats">' +
+      '<div class="stat blue"><div class="num">' + d.stats.classes + '</div><div class="label">Upcoming Classes</div></div>' +
+      '<div class="stat"><div class="num">' + d.stats.projects + '</div><div class="label">Active Projects</div></div>' +
+      '<div class="stat green"><div class="num">' + d.stats.pending + '</div><div class="label">Pending Submissions</div></div>' +
+      '<div class="stat amber"><div class="num">' + d.stats.due_week + '</div><div class="label">Due This Week</div></div>' +
+    '</div>';
+  const upcomingHtml =
+    '<div class="card"><div class="card-head"><div><div class="card-title">Upcoming Classes</div><div class="card-sub">Semester and department are shown for every class.</div></div><button class="btn" data-nav="classes">View all</button></div>' +
+    '<div class="card-body">' + (d.classes.length ? d.classes.map(function (c) {
+      return '<div class="row"><div class="row-main"><div class="row-title">' + esc(c.subject) + '</div>' +
+        '<div class="row-meta">' + esc(c.start_time) + (c.end_time ? '' + esc(c.end_time) : '') + '  ' + esc(c.semester) + '  ' + esc(c.department) + (c.section ? '  ' + esc(c.section) : '') + '</div>' +
+        '<div class="row-meta">' + esc(c.topic || 'Topic not set') + (c.room ? '  ' + esc(c.room) : '') + '</div></div>' +
+        '<span class="chip">' + esc(c.class_date) + '</span></div>';
+    }).join('') : '<div class="empty"><strong>No upcoming classes</strong>Add a class to populate the dashboard.</div>') + '</div></div>';
+  const summaryHtml =
+    '<div class="card" id="summaryCard"><div class="card-head"><div><div class="card-title">Today\'s Teaching Summary</div><div class="card-sub" id="summarySub">Local AI turns today\'s topics into a quick briefing.</div></div><span class="chip" id="summaryStatus">Loading</span></div>' +
+    '<div class="card-body" id="summaryBox">' + (d.today_classes.length ? d.today_classes.map(function (c) {
+      return '<div style="margin-bottom:13px"><b>' + esc(c.start_time) + ' — ' + esc(c.subject) + '</b><div class="muted">' + esc(c.topic || 'No topic entered.') + '</div></div>';
+    }).join('') : 'No classes scheduled today.') + '</div></div>';
+  const projectsHtml =
+    '<div class="card"><div class="card-head"><div><div class="card-title">Projects Requiring Attention</div><div class="card-sub">Active projects ordered by deadline.</div></div><button class="btn" data-nav="projects">Manage projects</button></div>' +
+    '<div class="card-body">' + (d.active_projects.length ? d.active_projects.map(function (p) {
+      const total = +p.student_count || 0;
+      const sub = (+p.submitted_count || 0) + (+p.late_count || 0);
+      const pct = total ? Math.round(sub / total * 100) : 0;
+      return '<div class="row"><div class="row-main"><div class="row-title">' + esc(p.name) + '</div>' +
+        '<div class="row-meta">' + esc(p.semester) + '  ' + esc(p.department) + '  Deadline ' + esc(p.deadline) + '</div>' +
+        '<div class="progress"><span style="width:' + pct + '%"></span></div>' +
+        '<div class="row-meta">' + sub + '/' + total + ' submitted  ' + (p.pending_count || 0) + ' pending</div></div>' +
+        '<span class="chip ' + (p.pending_count ? 'amber' : 'green') + '">' + (p.pending_count ? 'Needs attention' : 'On track') + '</span></div>';
+    }).join('') : '<div class="empty"><strong>No active projects</strong>Create a project to track student submissions.</div>') + '</div></div>';
+  qs('#content').innerHTML = statsHtml + '<div class="grid-two">' + upcomingHtml + summaryHtml + '</div>' + projectsHtml;
+  qsa('[data-nav]').forEach(function (b) { b.onclick = function () { nav(b.dataset.nav); }; });
+  renderDashboardSummary(d.today_classes);
+}
+</script>
+<script>
+function classModal(existing) {
+  const c = existing || { subject: '', semester: 'Semester 3', department: APP.meta.departments[0] || 'Computer Science', section: '', class_date: new Date().toISOString().slice(0, 10), start_time: '09:00', end_time: '10:00', room: '', topic: '', notes: '' };
+  modal(
+    '<div class="modal-head"><div><b>' + (existing ? 'Edit' : 'Add') + ' Class</b></div><button class="close" onclick="closeModal()"></button></div>' +
+    '<div class="modal-body"><div class="form-grid three">' +
+      field('Subject', 'subject', c.subject) +
+      field('Semester', 'semester', c.semester) +
+      field('Department', 'department', c.department, 'select', APP.meta.departments) +
+      field('Section', 'section', c.section) +
+      field('Date', 'class_date', c.class_date, 'date') +
+      field('Start', 'start_time', c.start_time, 'time') +
+      field('End', 'end_time', c.end_time, 'time') +
+      field('Room', 'room', c.room) +
+      field('Topic', 'topic', c.topic) +
+    '</div>' + field('Notes', 'notes', c.notes, 'textarea') +
+    '<div class="form-actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" id="saveClass">Save Class</button></div></div>'
+  );
+  qs('#saveClass').onclick = async function () {
+    const d = readFields(['subject', 'semester', 'department', 'section', 'class_date', 'start_time', 'end_time', 'room', 'topic', 'notes']);
+    try {
+      await api(existing ? '/api/classes/' + existing.id : '/api/classes', { method: existing ? 'PUT' : 'POST', body: JSON.stringify(d) });
+      closeModal(); toast(existing ? 'Class updated' : 'Class added', 'ok'); render();
+    } catch (e) { toast(e.message, 'err'); }
+  };
+}
+
+async function renderClasses() {
+  const rows = await api('/api/classes');
+  qs('#content').innerHTML =
+    '<div class="card"><div class="card-head"><div><div class="card-title">Class Schedule</div><div class="card-sub">All classes stored locally in your teacher database.</div></div></div>' +
+    '<div class="table-wrap"><table class="table"><thead><tr><th>Date</th><th>Time</th><th>Subject</th><th>Semester</th><th>Department</th><th>Topic</th><th></th></tr></thead><tbody>' +
+    (rows.length ? rows.map(function (c) {
+      return '<tr><td>' + esc(c.class_date) + '</td><td>' + esc(c.start_time) + (c.end_time ? ' ' + esc(c.end_time) : '') + '</td>' +
+        '<td><b>' + esc(c.subject) + '</b><div class="muted">' + esc(c.section || '') + '</div></td>' +
+        '<td>' + esc(c.semester) + '</td><td>' + esc(c.department) + '</td><td>' + esc(c.topic || '') + '</td>' +
+        '<td><div class="two-btns"><button class="btn" data-edit-class="' + c.id + '">Edit</button><button class="btn danger" data-delete-class="' + c.id + '">Delete</button></div></td></tr>';
+    }).join('') : '<tr><td colspan="7"><div class="empty"><strong>No classes yet</strong>Add your first class.</div></td></tr>') +
+    '</tbody></table></div></div>';
+  qsa('[data-edit-class]').forEach(function (b) { b.onclick = function () { const id = +b.getAttribute('data-edit-class'); const cls = rows.find(function (c) { return c.id === id; }); if (cls) classModal(cls); }; });
+  qsa('[data-delete-class]').forEach(function (b) { b.onclick = function () { deleteClass(+b.getAttribute('data-delete-class')); }; });
+}
+
+async function deleteClass(id) {
+  if (!confirm('Delete this class?')) return;
+  try { await api('/api/classes/' + id, { method: 'DELETE' }); toast('Class deleted', 'ok'); render(); }
+  catch (e) { toast(e.message, 'err'); }
+}
+</script>
+<script>
+let questionsJobId = null;
+
+function renderQuestionGenerator() {
+  qs('#content').innerHTML =
+    '<div class="grid-two"><div class="card"><div class="card-head"><div><div class="card-title">Generate Questions by Topic</div><div class="card-sub">Generate suggestions, then personally select what goes into a paper.</div></div></div>' +
+    '<div class="card-body"><div class="form-grid">' +
+      '<div class="field"><label>Topic</label><input id="qTopic" placeholder="e.g. Binary Search Trees"></div>' +
+      '<div class="field"><label>Marks</label><select id="qMarks"><option>1</option><option>2</option><option>3</option><option selected>5</option><option>8</option><option>10</option></select></div>' +
+      '<div class="field"><label>Difficulty</label><select id="qDiff"><option>Easy</option><option selected>Medium</option><option>Hard</option></select></div>' +
+      '<div class="field"><label>Question Type</label><select id="qType"><option>MCQ</option><option selected>Short Answer</option><option>Long Answer</option><option>Essay</option><option>Numerical</option><option>Case Study</option><option>Application Based</option><option>Assertion-Reasoning</option></select></div>' +
+      '<div class="field"><label>Suggestions</label><input id="qCount" type="number" min="1" max="10" value="4"></div>' +
+      '<div class="field"><label>Extra context (optional)</label><input id="qContext" placeholder="Learning outcomes, syllabus notes..."></div>' +
+    '</div><div class="form-actions"><button class="btn primary" id="genQuestions">Generate Questions</button><button class="btn" id="cancelQuestions" style="display:none">Cancel</button></div>' +
+    '<div class="helper" style="margin-top:10px" id="aiQStatus">Checking local AI...</div></div></div>' +
+    '<div class="card"><div class="card-head"><div><div class="card-title">Suggested Questions</div><div class="card-sub">Choose only the questions you want.</div></div><button class="btn" data-nav="exam-generator">Open Exam Builder</button></div>' +
+    '<div class="card-body" id="suggestions"><div class="empty"><strong>No suggestions yet</strong>Fill the form and generate questions.</div></div></div></div>';
+  api('/api/ai/status').then(function (s) {
+    const t = qs('#aiQStatus');
+    if (t) t.textContent = (s.running && s.model_installed) ? ('Local AI ready — ' + s.model) : (s.message || 'Local AI is not ready.');
+  }).catch(function () { const t = qs('#aiQStatus'); if (t) t.textContent = 'Could not check local AI status.'; });
+  qs('#genQuestions').onclick = startQuestionsGeneration;
+  qs('#cancelQuestions').onclick = function () { if (questionsJobId) cancelJob(questionsJobId); };
+  qsa('[data-nav]').forEach(function (b) { b.onclick = function () { nav(b.dataset.nav); }; });
+}
+
+function paintSuggestions(questions) {
+  window.generatedQuestions = questions || [];
+  const out = qs('#suggestions');
+  if (!out) return;
+  if (!questions || !questions.length) { out.innerHTML = '<div class="empty">No questions returned.</div>'; return; }
+  out.innerHTML = questions.map(function (q, i) {
+    return '<div class="question"><div class="q-top"><div class="q-tags">' +
+      '<span class="chip">' + esc(q.type || 'Question') + '</span>' +
+      '<span class="chip">' + esc(q.marks) + ' marks</span>' +
+      '<span class="chip">' + esc(q.difficulty) + '</span>' +
+      '</div><button class="btn" data-copy-q="' + i + '">Copy</button></div>' +
+      '<div style="margin-top:10px">' + esc(q.question || '') + '</div>' +
+      '<div class="q-actions"><button class="btn primary" data-add-q="' + i + '">Add to Paper</button></div></div>';
+  }).join('');
+  qsa('[data-copy-q]').forEach(function (b) { b.onclick = function () { const i = +b.getAttribute('data-copy-q'); const t = (window.generatedQuestions[i] || {}).question || ''; if (navigator.clipboard) navigator.clipboard.writeText(t).then(function () { toast('Question copied', 'ok'); }); }; });
+  qsa('[data-add-q]').forEach(function (b) { b.onclick = function () { addGeneratedToPaper(+b.getAttribute('data-add-q')); }; });
+}
+
+function startQuestionsGeneration() {
+  const topicEl = qs('#qTopic');
+  const topic = topicEl ? topicEl.value.trim() : '';
+  if (!topic) { toast('Enter a topic before generating questions.', 'err'); return; }
+  const payload = {
+    topic: topic,
+    marks: +(qs('#qMarks') ? qs('#qMarks').value : 2),
+    difficulty: qs('#qDiff') ? qs('#qDiff').value : 'Medium',
+    question_type: qs('#qType') ? qs('#qType').value : 'Short Answer',
+    count: +(qs('#qCount') ? qs('#qCount').value : 4),
+    context: qs('#qContext') ? qs('#qContext').value : ''
+  };
+  const btn = qs('#genQuestions');
+  const cancelBtn = qs('#cancelQuestions');
+  const status = qs('#aiQStatus');
+  const out = qs('#suggestions');
+  btn.disabled = true;
+  btn.textContent = 'Queued';
+  if (cancelBtn) cancelBtn.style.display = 'inline-flex';
+  out.innerHTML = '<div class="empty"><strong>Working</strong>Generating questions in the background. You can navigate to other pages.</div>';
+  api('/api/ai/questions', { method: 'POST', body: JSON.stringify(payload) })
+    .then(function (snap) {
+      questionsJobId = snap.id;
+      return pollJob(snap.id, function (job) {
+        if (job.status === 'queued') { status.textContent = 'Queued'; }
+        else if (job.status === 'running') { status.textContent = 'Generating questions'; }
+        else if (job.status === 'completed') {
+          const questions = (job.result && (job.result.questions || job.result)) || [];
+          paintSuggestions(questions);
+          status.textContent = 'Ready.';
+          toast('Questions ready', 'ok');
+        } else if (job.status === 'failed') {
+          const m = (job.error || '').match(/^([a-z_]+):\s*(.*)$/);
+          const friendly = describeJobError({ code: m ? m[1] : null, message: m ? m[2] : job.error });
+          out.innerHTML = '<div class="warning">' + esc(friendly) + '</div>';
+          status.textContent = 'Generation failed.';
+        } else if (job.status === 'cancelled') {
+          status.textContent = 'Cancelled.';
+          out.innerHTML = '<div class="empty"><strong>Cancelled</strong>Press Generate to try again.</div>';
+        }
+      });
+    })
+    .catch(function (err) {
+      const friendly = describeJobError(err);
+      status.textContent = 'Generation failed.';
+      out.innerHTML = '<div class="warning">' + esc(friendly) + '</div>';
+      toast(friendly, 'err');
+    })
+    .then(function () {
+      btn.disabled = false;
+      btn.textContent = 'Generate Questions';
+      if (cancelBtn) cancelBtn.style.display = 'none';
+      questionsJobId = null;
+    }, function () {
+      btn.disabled = false;
+      btn.textContent = 'Generate Questions';
+      if (cancelBtn) cancelBtn.style.display = 'none';
+      questionsJobId = null;
+    });
+}
+
+function newExamDraft() {
+  return {
+    name: '', subject: '', semester: 'Semester 3',
+    department: APP.meta.departments[0] || 'Computer Science',
+    duration: 90, total_marks: 50,
+    instructions: 'Answer all questions. Use clear and relevant diagrams where necessary.',
+    structure_prompt: '', topics: [], difficulty: 'Medium',
+    topic_distribution: {}, reference_analysis: {}, reference_name: '',
+    questions: []
+  };
+}
+
+function addGeneratedToPaper(i) {
+  APP.examDraft = APP.examDraft || newExamDraft();
+  const q = window.generatedQuestions[i];
+  if (!q) return;
+  APP.examDraft.questions.push(Object.assign({}, q, { question_text: q.question || q.question_text || '', position: APP.examDraft.questions.length + 1 }));
+  toast('Question added to current paper draft', 'ok');
+}
+</script>
+<script>
+let examJobId = null;
+
+function renderExamGenerator() {
+  APP.examDraft = APP.examDraft || newExamDraft();
+  qs('#content').innerHTML =
+    '<div class="tabs"><button class="tab active" id="tabSetup">1. Setup and Structure</button><button class="tab" id="tabBuild">2. Review Questions</button><button class="tab" id="tabPreview">3. Preview and Export</button></div>' +
+    '<div id="examStage"></div>';
+  showExamSetup();
+}
+
+function showExamSetup() {
+  qsa('.tab').forEach(function (x) { x.classList.remove('active'); });
+  const t = qs('#tabSetup'); if (t) t.classList.add('active');
+  const d = APP.examDraft;
+  qs('#examStage').innerHTML =
+    '<div class="grid-two"><div><div class="card"><div class="card-head"><div><div class="card-title">Paper Setup</div><div class="card-sub">Choose semester, department, topics and paper structure.</div></div></div>' +
+    '<div class="card-body"><div class="form-grid">' +
+      field('Exam Name', 'exName', d.name) +
+      field('Subject', 'exSubject', d.subject) +
+      field('Semester', 'exSemester', d.semester) +
+      field('Department', 'exDepartment', d.department, 'select', APP.meta.departments) +
+      field('Duration (minutes)', 'exDuration', d.duration, 'number') +
+      field('Total Marks', 'exTotal', d.total_marks, 'number') +
+    '</div>' +
+      field('Topics (comma separated)', 'exTopics', d.topics.join(', ')) +
+      field('Paper structure', 'exStructure', d.structure_prompt || 'First 2 x 5 mark questions, then 3 x 3 mark questions, then 5 x 2 mark questions. Keep mark distribution equal between topics.', 'textarea') +
+    '<div class="form-grid"><div class="field"><label>Overall Paper Difficulty</label><select id="exDifficulty">' +
+      '<option ' + (d.difficulty === 'Easy' ? 'selected' : '') + '>Easy</option>' +
+      '<option ' + (d.difficulty === 'Medium' ? 'selected' : '') + '>Medium</option>' +
+      '<option ' + (d.difficulty === 'Hard' ? 'selected' : '') + '>Hard</option>' +
+    '</select><div class="helper" style="margin-top:6px">This single setting controls the difficulty of the entire paper.</div></div>' +
+    '<div class="field"><label>Topic distribution</label><input id="exDist" placeholder="Optional: Trees:30, Graphs:30, Linked Lists:40"></div></div>' +
+    '<div class="form-actions"><button class="btn primary" id="generatePaper">Generate Full Paper with AI</button><button class="btn" id="cancelPaper" style="display:none">Cancel</button></div>' +
+    '<div class="helper" style="margin-top:10px" id="examJobStatus"></div>' +
+    '</div></div>' +
+    '<div class="card"><div class="card-head"><div><div class="card-title">Previous Question Paper</div><div class="card-sub">Use it as a structure/style reference.</div></div></div>' +
+    '<div class="card-body"><input type="file" id="referenceFile" accept=".pdf,.docx,.png,.jpg,.jpeg,.txt"><div id="refInfo" class="helper" style="margin-top:8px">No reference uploaded.</div></div></div></div>' +
+    '<div><div class="card"><div class="card-head"><div><div class="card-title">Structure Checklist</div><div class="card-sub">Live validation before generation.</div></div></div>' +
+    '<div class="card-body" id="setupChecks"></div></div>' +
+    '<div class="card"><div class="card-head"><div class="card-title">Quick individual generator</div></div>' +
+    '<div class="card-body"><div class="helper">Use the AI Question Generator page for detailed question-by-question suggestions.</div><button class="btn" data-nav="question-generator" style="margin-top:10px">Open Question Generator</button></div></div></div></div>';
+  setupChecks();
+  qsa('#examStage input,#examStage textarea,#examStage select').forEach(function (e) { e.addEventListener('input', setupChecks); });
+  qsa('#examStage select').forEach(function (e) { e.addEventListener('change', setupChecks); });
+  qs('#referenceFile').onchange = uploadReference;
+  qs('#generatePaper').onclick = generatePaper;
+  qs('#cancelPaper').onclick = function () { if (examJobId) cancelJob(examJobId); };
+  qsa('[data-nav]').forEach(function (b) { b.onclick = function () { nav(b.dataset.nav); }; });
+}
+
+function setupChecks() {
+  const d = readExam();
+  qs('#setupChecks').innerHTML =
+    '<div class="notice"><b>Overall paper difficulty:</b> ' + esc(d.difficulty) + '  This setting applies to the entire paper.</div>' +
+    '<div class="notice"><b>Topics:</b> ' + (d.topics.length ? esc(d.topics.join(', ')) : 'Add at least one topic.') + '</div>' +
+    '<div class="notice"><b>Total marks:</b> ' + d.total_marks + '  <b>Structure:</b> ' + (d.structure_prompt ? 'Provided' : 'Not yet provided') + '</div>';
+}
+
+function readExam() {
+  const d = Object.assign({}, APP.examDraft);
+  d.name = (qs('#f_exName') ? qs('#f_exName').value : '') || d.name || '';
+  d.subject = (qs('#f_exSubject') ? qs('#f_exSubject').value : '') || d.subject || '';
+  d.semester = (qs('#f_exSemester') ? qs('#f_exSemester').value : '') || d.semester || '';
+  d.department = (qs('#f_exDepartment') ? qs('#f_exDepartment').value : '') || d.department || '';
+  d.duration = +(qs('#f_exDuration') ? qs('#f_exDuration').value : '') || d.duration || 90;
+  d.total_marks = +(qs('#f_exTotal') ? qs('#f_exTotal').value : '') || d.total_marks || 50;
+  d.topics = ((qs('#f_exTopics') ? qs('#f_exTopics').value : '') || '').split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+  d.structure_prompt = (qs('#f_exStructure') ? qs('#f_exStructure').value : '') || '';
+  d.difficulty = (qs('#exDifficulty') ? qs('#exDifficulty').value : '') || d.difficulty || 'Medium';
+  d.topic_distribution = {};
+  ((qs('#exDist') ? qs('#exDist').value : '') || '').split(',').forEach(function (x) {
+    const parts = x.split(':');
+    if (parts[0] && parts[1] && !isNaN(+parts[1])) d.topic_distribution[parts[0].trim()] = +parts[1];
+  });
+  APP.examDraft = d;
+  return d;
+}
+
+async function uploadReference() {
+  const f = qs('#referenceFile').files[0];
+  if (!f) return;
+  qs('#refInfo').textContent = 'Uploading reference';
+  const fd = new FormData();
+  fd.append('file', f);
+  try {
+    const r = await fetch('/api/ai/analyze-paper', { method: 'POST', body: fd });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error || 'Analysis failed');
+    const final = pollJob(j.id, function (job) {
+      if (job.status === 'queued' || job.status === 'running') {
+        qs('#refInfo').textContent = 'Analyzing reference';
+      } else if (job.status === 'completed') {
+        const analysis = job.result || {};
+        APP.examDraft.reference_name = f.name;
+        APP.examDraft.reference_analysis = analysis;
+        qs('#refInfo').innerHTML = '<div class="notice"><b>Reference analyzed.</b><br>' + esc(analysis.style_notes || analysis.summary || 'Style information captured.') + '</div>';
+      } else if (job.status === 'failed') {
+        const m = (job.error || '').match(/^([a-z_]+):\s*(.*)$/);
+        qs('#refInfo').textContent = 'Analysis failed: ' + describeJobError({ code: m ? m[1] : null, message: m ? m[2] : job.error });
+      }
+    });
+    final.then(function () { /* done */ });
+  } catch (e) {
+    qs('#refInfo').textContent = 'Could not analyze reference: ' + e.message;
+  }
+}
+
+function generatePaper() {
+  const d = readExam();
+  if (['Easy', 'Medium', 'Hard'].indexOf(d.difficulty) < 0) { toast('Choose an overall paper difficulty.', 'err'); return; }
+  if (!d.topics.length) { toast('Add at least one topic.', 'err'); return; }
+  if (!d.name || !d.subject || !d.duration || !d.total_marks) { toast('Fill exam name, subject, duration and total marks first.', 'err'); return; }
+  const btn = qs('#generatePaper');
+  const cancelBtn = qs('#cancelPaper');
+  const status = qs('#examJobStatus');
+  btn.disabled = true;
+  btn.textContent = 'Queued';
+  if (cancelBtn) cancelBtn.style.display = 'inline-flex';
+  if (status) status.textContent = 'Starting AI paper generation in the background';
+  api('/api/ai/exam', { method: 'POST', body: JSON.stringify(d) })
+    .then(function (snap) {
+      examJobId = snap.id;
+      return pollJob(snap.id, function (job) {
+        if (job.status === 'queued') { if (status) status.textContent = 'Queued'; }
+        else if (job.status === 'running') { if (status) status.textContent = 'Generating exam paper with local AI'; }
+        else if (job.status === 'completed') {
+          const res = job.result || {};
+          APP.examDraft.questions = (res.questions || []).map(function (q, i) { return Object.assign({}, q, { position: i + 1 }); });
+          APP.examDraft.instructions = res.instructions || APP.examDraft.instructions;
+          showExamBuild();
+          toast('Question paper generated', 'ok');
+        } else if (job.status === 'failed') {
+          const m = (job.error || '').match(/^([a-z_]+):\s*(.*)$/);
+          if (status) status.textContent = 'Generation failed.';
+          toast(describeJobError({ code: m ? m[1] : null, message: m ? m[2] : job.error }), 'err');
+        } else if (job.status === 'cancelled') {
+          if (status) status.textContent = 'Cancelled.';
+        }
+      });
+    })
+    .catch(function (err) {
+      const friendly = describeJobError(err);
+      toast(friendly, 'err');
+      if (status) status.textContent = friendly;
+    })
+    .then(function () {
+      btn.disabled = false;
+      btn.textContent = 'Generate Full Paper with AI';
+      if (cancelBtn) cancelBtn.style.display = 'none';
+      examJobId = null;
+    }, function () {
+      btn.disabled = false;
+      btn.textContent = 'Generate Full Paper with AI';
+      if (cancelBtn) cancelBtn.style.display = 'none';
+      examJobId = null;
+    });
+}
+</script>
+<script>
+function showExamBuild() {
+  qsa('.tab').forEach(function (x) { x.classList.remove('active'); });
+  const t = qs('#tabBuild'); if (t) t.classList.add('active');
+  const d = APP.examDraft;
+  qs('#examStage').innerHTML =
+    '<div class="card"><div class="card-head"><div><div class="card-title">Review and Edit Questions</div><div class="card-sub">Every question is editable. Reorder, regenerate or remove anything you do not want.</div></div>' +
+    '<div class="two-btns"><button class="btn" onclick="addManualQuestion()">+ Add Manually</button><button class="btn primary" onclick="showExamPreview()">Preview Paper</button></div></div>' +
+    '<div class="card-body"><div id="paperQuestions">' + (d.questions.length ? d.questions.map(function (q, i) { return questionEditor(q, i); }).join('') : '<div class="empty"><strong>No questions yet</strong>Add a manual question or generate the paper.</div>') + '</div></div></div>';
+}
+
+function questionEditor(q, i) {
+  return '<div class="question"><div class="q-top"><div class="q-tags"><span class="chip">Q' + (i + 1) + '</span><span class="chip">' + esc(q.section || 'Section') + '</span></div><button class="btn danger" data-remove-q="' + i + '">Delete</button></div>' +
+    '<textarea id="qq_' + i + '" style="width:100%;min-height:75px;border:1px solid var(--border);border-radius:8px;padding:10px">' + esc(q.question_text || q.question || '') + '</textarea>' +
+    '<div class="form-grid three" style="margin-top:9px"><div class="field"><label>Type</label><input id="qt_' + i + '" value="' + esc(q.question_type || q.type || 'Short Answer') + '"></div>' +
+    '<div class="field"><label>Topic</label><input id="qp_' + i + '" value="' + esc(q.topic || '') + '"></div>' +
+    '<div class="field"><label>Marks</label><input id="qm_' + i + '" type="number" value="' + (q.marks || 1) + '"></div></div></div>';
+}
+
+function syncQuestions() {
+  APP.examDraft.questions.forEach(function (q, i) {
+    q.question_text = (qs('#qq_' + i) ? qs('#qq_' + i).value : '') || q.question_text;
+    q.question_type = (qs('#qt_' + i) ? qs('#qt_' + i).value : '') || q.question_type;
+    q.topic = (qs('#qp_' + i) ? qs('#qp_' + i).value : '') || q.topic;
+    q.marks = +(qs('#qm_' + i) ? qs('#qm_' + i).value : '') || q.marks || 1;
+    q.position = i + 1;
+  });
+}
+
+function addManualQuestion() {
+  syncQuestions();
+  APP.examDraft.questions.push({ position: APP.examDraft.questions.length + 1, section: 'Section A', question_text: '', question_type: 'Short Answer', topic: (APP.examDraft.topics[0] || ''), marks: 2, difficulty: APP.examDraft.difficulty || 'Medium', answer_key: '' });
+  showExamBuild();
+}
+
+function removeQuestion(i) {
+  syncQuestions();
+  APP.examDraft.questions.splice(i, 1);
+  showExamBuild();
+  qsa('[data-remove-q]').forEach(function (b) { b.onclick = function () { removeQuestion(+b.getAttribute('data-remove-q')); }; });
+}
+
+function showExamPreview() {
+  syncQuestions();
+  qsa('.tab').forEach(function (x) { x.classList.remove('active'); });
+  const t = qs('#tabPreview'); if (t) t.classList.add('active');
+  const d = APP.examDraft;
+  const groups = {};
+  d.questions.forEach(function (q) { (groups[q.section || ''] = groups[q.section || ''] || []).push(q); });
+  let questionsHtml = '';
+  Object.keys(groups).forEach(function (s) {
+    if (s) questionsHtml += '<div class="paper-section">' + esc(s) + '</div>';
+    groups[s].forEach(function (q) {
+      questionsHtml += '<div class="paper-q"><span class="marks">[' + (q.marks || 1) + ']</span><b>Q' + (q.position || 1) + '.</b> ' + esc(q.question_text || '') + '</div>';
+    });
+  });
+  qs('#examStage').innerHTML =
+    '<div class="grid-two"><div class="card"><div class="card-head"><div><div class="card-title">Question Paper Preview</div><div class="card-sub">Print-ready preview.</div></div></div>' +
+    '<div class="card-body"><div class="paper-preview" id="printPaper">' +
+    '<h2>' + esc(d.name || 'Examination') + '</h2>' +
+    '<div class="center">' + esc(d.department) + '  ' + esc(d.semester) + '  ' + esc(d.subject) + '</div>' +
+    '<div class="center">Duration: ' + (d.duration || 0) + ' minutes  Maximum Marks: ' + (d.total_marks || 0) + '</div><hr>' +
+    (d.instructions ? '<div style="margin:15px 0"><b>Instructions</b><div class="muted">' + esc(d.instructions) + '</div></div>' : '') +
+    questionsHtml +
+    '</div></div></div>' +
+    '<div class="card"><div class="card-head"><div class="card-title">Save and Export</div></div>' +
+    '<div class="card-body"><div class="notice">Questions can be edited from the Review step before saving.</div>' +
+    '<button class="btn primary" style="width:100%;margin-bottom:9px" id="saveExam">Save Paper</button>' +
+    '<button class="btn" style="width:100%;margin-bottom:9px" onclick="window.print()">Print</button>' +
+    '<button class="btn" style="width:100%" id="saveExamPdf">Save and Export PDF</button></div></div></div>';
+  qs('#saveExam').onclick = saveExam;
+  qs('#saveExamPdf').onclick = saveExamAndPDF;
+}
+
+async function saveExam() {
+  syncQuestions();
+  const r = await api('/api/exams', { method: 'POST', body: JSON.stringify(APP.examDraft) });
+  APP.examDraft.id = r.id;
+  toast('Exam paper saved', 'ok');
+  return r.id;
+}
+
+async function saveExamAndPDF() {
+  const id = await saveExam();
+  window.location = '/api/exams/' + id + '/pdf';
+}
+</script>
+<script>
+async function renderProjects() {
+  const rows = await api('/api/projects?status=Active');
+  projectPage(rows, 'Active Projects');
+}
+async function renderHistory() {
+  const rows = await api('/api/projects?status=History');
+  projectPage(rows, 'Project History');
+}
+
+function projectPage(rows, title) {
+  const statusFilter = title === 'Active Projects' ? 'Active' : 'History';
+  qs('#content').innerHTML =
+    '<div class="card"><div class="card-head"><div><div class="card-title">' + title + '</div><div class="card-sub">Search by semester, department, project, topic or student.</div></div><button class="btn primary" id="newProjectBtn">+ New Project</button></div>' +
+    '<div class="card-body"><div class="searchbar">' +
+      '<input class="grow" id="pSearch" placeholder="Search projects, students, roll numbers...">' +
+      '<select id="pSem"><option value="">All semesters</option>' + APP.meta.semesters.map(function (s) { return '<option>' + esc(s) + '</option>'; }).join('') + '</select>' +
+      '<select id="pDept"><option value="">All departments</option>' + APP.meta.departments.map(function (s) { return '<option>' + esc(s) + '</option>'; }).join('') + '</select>' +
+      '<button class="btn" id="pSearchBtn">Search</button>' +
+      '<button class="btn danger" id="semDelBtn">Delete Semester Data</button>' +
+    '</div><div id="projectRows" style="margin-top:14px"></div></div></div>';
+  paintProjects(rows);
+  qs('#newProjectBtn').onclick = function () { projectModal(); };
+  qs('#pSearchBtn').onclick = function () { searchProjects(statusFilter); };
+  qs('#semDelBtn').onclick = semesterDeleteModal;
+}
+
+function searchProjects(statusFilter) {
+  const url = '/api/projects?status=' + encodeURIComponent(statusFilter) +
+    '&q=' + encodeURIComponent(qs('#pSearch').value) +
+    '&semester=' + encodeURIComponent(qs('#pSem').value) +
+    '&department=' + encodeURIComponent(qs('#pDept').value);
+  api(url).then(function (rows) { paintProjects(rows); });
+}
+
+function paintProjects(rows) {
+  qs('#projectRows').innerHTML = rows.length ? rows.map(function (p) {
+    const total = +p.student_count || 0;
+    const sub = (+p.submitted_count || 0) + (+p.late_count || 0);
+    const pct = total ? Math.round(sub / total * 100) : 0;
+    return '<div class="row"><div class="row-main"><div class="row-title">' + esc(p.name) + '</div>' +
+      '<div class="row-meta">' + esc(p.semester) + '  ' + esc(p.department) + (p.section ? '  ' + esc(p.section) : '') + '  Deadline ' + esc(p.deadline) + '</div>' +
+      '<div class="progress"><span style="width:' + pct + '%"></span></div>' +
+      '<div class="row-meta">' + sub + '/' + total + ' submitted  ' + (p.late_count || 0) + ' late  ' + (p.pending_count || 0) + ' pending</div></div>' +
+      '<span class="chip ' + (p.status === 'History' ? '' : 'green') + '">' + esc(p.status) + '</span>' +
+      '<button class="btn" data-open-project="' + p.id + '">View</button></div>';
+  }).join('') : '<div class="empty"><strong>No projects found</strong>Try a different search or create a new project.</div>';
+  qsa('[data-open-project]').forEach(function (b) { b.onclick = function () { openProject(+b.getAttribute('data-open-project')); }; });
+}
+
+function projectModal(existing) {
+  const p = existing || { name: '', topic: '', description: '', semester: (APP.meta.semesters[0] || 'Semester 3'), department: (APP.meta.departments[0] || 'Computer Science'), section: '', deadline: new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10), status: 'Active' };
+  modal(
+    '<div class="modal-head"><b>' + (existing ? 'Edit' : 'New') + ' Project</b><button class="close" onclick="closeModal()"></button></div>' +
+    '<div class="modal-body">' +
+      field('Project Name', 'prName', p.name) +
+      field('Project Topic', 'prTopic', p.topic, 'textarea') +
+      '<div class="form-grid">' +
+        field('Semester', 'prSemester', p.semester, 'select', APP.meta.semesters) +
+        field('Department', 'prDepartment', p.department, 'select', APP.meta.departments) +
+        field('Section', 'prSection', p.section) +
+        field('Deadline', 'prDeadline', p.deadline, 'date') +
+      '</div>' +
+      field('Description', 'prDescription', p.description, 'textarea') +
+      '<div class="field"><label>Students</label><div class="helper" style="margin-bottom:7px">Students are filtered by the selected semester, department and section. Change those fields to refresh the list.</div>' +
+      '<div id="studentPicker" class="check-list"><div class="helper">Loading students...</div></div></div>' +
+      '<div class="form-actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" id="saveProject">Save Project</button></div></div>',
+    true
+  );
+  const refresh = function () {
+    loadStudentPicker({
+      semester: (qs('#f_prSemester') ? qs('#f_prSemester').value : ''),
+      department: (qs('#f_prDepartment') ? qs('#f_prDepartment').value : ''),
+      section: (qs('#f_prSection') ? qs('#f_prSection').value : ''),
+      selectedIds: (existing && APP.projectDetail && APP.projectDetail.project && APP.projectDetail.project.id === existing.id) ? ((APP.projectDetail.students || []).map(function (x) { return +x.student_id; })) : []
+    });
+  };
+  if (qs('#f_prSemester')) qs('#f_prSemester').addEventListener('change', refresh);
+  if (qs('#f_prDepartment')) qs('#f_prDepartment').addEventListener('change', refresh);
+  if (qs('#f_prSection')) qs('#f_prSection').addEventListener('input', refresh);
+  refresh().then(function () {
+    qs('#saveProject').onclick = function () {
+      const d = readFields(['prName', 'prTopic', 'prDescription', 'prSemester', 'prDepartment', 'prSection', 'prDeadline']);
+      d.student_ids = qsa('#studentPicker input:checked').map(function (x) { return +x.value; });
+      const url = existing ? ('/api/projects/' + existing.id) : '/api/projects';
+      const method = existing ? 'PUT' : 'POST';
+      const body = existing ? Object.assign({}, d, { status: existing.status || 'Active' }) : d;
+      api(url, { method: method, body: JSON.stringify(body) })
+        .then(function () { closeModal(); toast(existing ? 'Project updated' : 'Project created', 'ok'); render(); })
+        .catch(function (e) { toast(e.message, 'err'); });
+    };
+  });
+}
+
+async function loadStudentPicker(filters) {
+  const sem = filters.semester || '';
+  const dept = filters.department || '';
+  const section = filters.section || '';
+  const url = '/api/students?semester=' + encodeURIComponent(sem) + '&department=' + encodeURIComponent(dept) + (section ? '&section=' + encodeURIComponent(section) : '');
+  const students = await api(url);
+  const selected = new Set((filters.selectedIds || []).map(Number));
+  const box = qs('#studentPicker');
+  if (!box) return;
+  if (!students.length) {
+    box.innerHTML = '<div class="empty" style="grid-column:1/-1;padding:18px 8px"><strong>No students match these filters</strong><span>Check the semester, department or section, or add the student from the Students page.</span></div>';
+    return;
+  }
+  box.innerHTML = '<div class="picker-tools" style="grid-column:1/-1;display:flex;gap:8px;align-items:center;margin-bottom:2px"><span class="helper">' + students.length + ' student' + (students.length === 1 ? '' : 's') + ' found</span><button type="button" class="btn" id="pickAll">Select all</button><button type="button" class="btn" id="pickNone">Clear</button></div>' +
+    students.map(function (s) { return '<label class="check"><input type="checkbox" value="' + s.id + '" ' + (selected.has(+s.id) ? 'checked' : '') + '> ' + esc(s.name) + ' <span class="muted">(' + esc(s.roll_number) + ')</span></label>'; }).join('');
+  qs('#pickAll').onclick = function () { qsa('#studentPicker input').forEach(function (x) { x.checked = true; }); };
+  qs('#pickNone').onclick = function () { qsa('#studentPicker input').forEach(function (x) { x.checked = false; }); };
+}
+
+async function openProject(id) {
+  const x = await api('/api/projects/' + id);
+  APP.projectDetail = x;
+  modal(
+    '<div class="modal-head"><div><b>' + esc(x.project.name) + '</b><div class="muted">' + esc(x.project.semester) + '  ' + esc(x.project.department) + '  Deadline ' + esc(x.project.deadline) + '</div></div><button class="close" onclick="closeModal()"></button></div>' +
+    '<div class="modal-body"><div class="notice">' + esc(x.project.topic || 'No topic') + '<br>' + esc(x.project.description || '') + '</div>' +
+    '<div class="table-wrap"><table class="table"><thead><tr><th>Student</th><th>Roll</th><th>Status</th><th>Submitted</th><th>Note</th></tr></thead><tbody>' +
+    x.students.map(function (s) {
+      return '<tr><td><b>' + esc(s.name) + '</b></td><td>' + esc(s.roll_number) + '</td>' +
+        '<td><select class="status-select" data-set-submission="' + id + '_' + s.student_id + '">' +
+        '<option ' + (s.status === 'Pending' ? 'selected' : '') + '>Pending</option>' +
+        '<option ' + (s.status === 'Submitted' ? 'selected' : '') + '>Submitted</option>' +
+        '<option ' + (s.status === 'Late Submission' ? 'selected' : '') + '>Late Submission</option>' +
+        '</select></td><td>' + esc(s.submitted_at || '-') + '</td><td>' + esc(s.submission_note || '') + '</td></tr>';
+    }).join('') +
+    '</tbody></table></div>' +
+    '<div class="form-actions"><button class="btn" id="editProjectBtn">Edit Project</button>' + (x.project.status === 'History' ? '' : '<button class="btn danger" id="delProjectBtn">Delete</button>') + '</div></div>',
+    true
+  );
+  qs('#editProjectBtn').onclick = function () { closeModal(); projectModal(x.project); };
+  if (qs('#delProjectBtn')) qs('#delProjectBtn').onclick = function () { deleteProject(id); };
+  qsa('[data-set-submission]').forEach(function (sel) {
+    sel.onchange = function () {
+      const parts = sel.getAttribute('data-set-submission').split('_');
+      setSubmission(+parts[0], +parts[1], sel.value);
+    };
+  });
+}
+
+function projectEditModal(p) { closeModal(); projectModal(p); }
+
+async function setSubmission(pid, sid, status) {
+  let note = '';
+  if (status === 'Late Submission') note = prompt('Optional late submission note:') || '';
+  try {
+    await api('/api/projects/' + pid + '/submission', { method: 'POST', body: JSON.stringify({ student_id: sid, status: status, note: note }) });
+    toast('Submission updated', 'ok');
+    openProject(pid);
+  } catch (e) { toast(e.message, 'err'); }
+}
+
+async function deleteProject(id) {
+  if (!confirm('Delete this project and its submission records?')) return;
+  try {
+    await api('/api/projects/' + id, { method: 'DELETE' });
+    closeModal();
+    toast('Project deleted', 'ok');
+    render();
+  } catch (e) { toast(e.message, 'err'); }
+}
+
+async function semesterDeleteModal() {
+  modal(
+    '<div class="modal-head"><b>Delete Semester Data</b><button class="close" onclick="closeModal()"></button></div>' +
+    '<div class="modal-body"><div class="warning"><b>Warning:</b> this permanently removes students, projects, submission records and classes for the selected semester.</div>' +
+    '<div class="field" style="margin-top:14px"><label>Select semester</label><select id="deleteSelectId">' + APP.meta.semesters.map(function (s) { return '<option>' + esc(s) + '</option>'; }).join('') + '</select></div>' +
+    '<div class="form-actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn danger" id="deleteSemBtn">Delete Everything</button></div></div>'
+  );
+  qs('#deleteSemBtn').onclick = async function () {
+    const s = qs('#deleteSelectId').value;
+    if (!confirm('Permanently delete ALL data for ' + s + '?')) return;
+    try {
+      await api('/api/semester/' + encodeURIComponent(s) + '/delete', { method: 'POST' });
+      closeModal();
+      toast(s + ' data deleted', 'ok');
+      await boot();
+    } catch (e) { toast(e.message, 'err'); }
+  };
+}
+</script>
+<script>
+async function renderStudents() {
+  const rows = await api('/api/students');
+  qs('#content').innerHTML =
+    '<div class="card"><div class="card-head"><div><div class="card-title">Students</div><div class="card-sub">Keep semester, department and WhatsApp details ready for project reminders.</div></div><button class="btn primary" id="newStudentBtn">+ Add Student</button></div>' +
+    '<div class="card-body"><div class="searchbar">' +
+      '<input class="grow" id="sSearch" placeholder="Search name, roll number or phone">' +
+      '<select id="sSem"><option value="">All semesters</option>' + APP.meta.semesters.map(function (s) { return '<option>' + esc(s) + '</option>'; }).join('') + '</select>' +
+      '<select id="sDept"><option value="">All departments</option>' + APP.meta.departments.map(function (s) { return '<option>' + esc(s) + '</option>'; }).join('') + '</select>' +
+      '<select id="sSec"><option value="">All sections</option><option>A</option><option>B</option><option>C</option></select>' +
+      '<button class="btn" id="sSearchBtn">Search</button>' +
+    '</div><div id="studentRows" style="margin-top:14px"></div></div></div>';
+  paintStudents(rows);
+  qs('#newStudentBtn').onclick = function () { studentModal(); };
+  qs('#sSearchBtn').onclick = filterStudents;
+}
+
+function paintStudents(rows) {
+  qs('#studentRows').innerHTML = '<div class="table-wrap"><table class="table"><thead><tr><th>Student</th><th>Roll No.</th><th>Semester</th><th>Department</th><th>WhatsApp</th><th></th></tr></thead><tbody>' +
+    (rows.length ? rows.map(function (s) {
+      return '<tr><td><b>' + esc(s.name) + '</b></td><td>' + esc(s.roll_number) + '</td>' +
+        '<td>' + esc(s.semester) + '</td><td>' + esc(s.department) + '</td>' +
+        '<td>' + esc(s.whatsapp_number || s.phone || '') + '</td>' +
+        '<td><div class="two-btns"><button class="btn" data-edit-student="' + s.id + '">Edit</button><button class="btn danger" data-delete-student="' + s.id + '">Delete</button></div></td></tr>';
+    }).join('') : '<tr><td colspan="6"><div class="empty"><strong>No students</strong>Add students to use project assignment and reminders.</div></td></tr>') +
+    '</tbody></table></div>';
+  qsa('[data-edit-student]').forEach(function (b) { b.onclick = function () { const id = +b.getAttribute('data-edit-student'); const s = rows.find(function (x) { return x.id === id; }); if (s) studentModal(s); }; });
+  qsa('[data-delete-student]').forEach(function (b) { b.onclick = function () { deleteStudent(+b.getAttribute('data-delete-student')); }; });
+}
+
+function filterStudents() {
+  const url = '/api/students?q=' + encodeURIComponent(qs('#sSearch').value) +
+    '&semester=' + encodeURIComponent(qs('#sSem').value) +
+    '&department=' + encodeURIComponent(qs('#sDept').value) +
+    '&section=' + encodeURIComponent(qs('#sSec').value);
+  api(url).then(function (rows) { paintStudents(rows); });
+}
+
+function studentModal(existing) {
+  const s = existing || { name: '', roll_number: '', phone: '', whatsapp_number: '', semester: 'Semester 3', department: APP.meta.departments[0] || 'Computer Science', section: '', email: '' };
+  modal(
+    '<div class="modal-head"><b>' + (existing ? 'Edit' : 'Add') + ' Student</b><button class="close" onclick="closeModal()"></button></div>' +
+    '<div class="modal-body"><div class="form-grid">' +
+      field('Name', 'stName', s.name) +
+      field('Roll Number', 'stRoll', s.roll_number) +
+      field('Phone', 'stPhone', s.phone) +
+      field('WhatsApp Number', 'stWa', s.whatsapp_number) +
+      field('Semester', 'stSemester', s.semester) +
+      field('Department', 'stDepartment', s.department, 'select', APP.meta.departments) +
+      field('Section', 'stSection', s.section) +
+      field('Email', 'stEmail', s.email) +
+    '</div><div class="form-actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" id="saveStudent">Save Student</button></div></div>'
+  );
+  qs('#saveStudent').onclick = async function () {
+    const d = readFields(['stName', 'stRoll', 'stPhone', 'stWa', 'stSemester', 'stDepartment', 'stSection', 'stEmail']);
+    try {
+      await api(existing ? ('/api/students/' + existing.id) : '/api/students', { method: existing ? 'PUT' : 'POST', body: JSON.stringify({ name: d.stName, roll_number: d.stRoll, phone: d.stPhone, whatsapp_number: d.stWa, semester: d.stSemester, department: d.stDepartment, section: d.stSection, email: d.stEmail }) });
+      closeModal(); toast(existing ? 'Student updated' : 'Student added', 'ok'); render();
+    } catch (e) { toast(e.message, 'err'); }
+  };
+}
+
+async function deleteStudent(id) {
+  if (!confirm('Delete this student? Linked project submission records will also be removed.')) return;
+  try { await api('/api/students/' + id, { method: 'DELETE' }); toast('Student deleted', 'ok'); render(); }
+  catch (e) { toast(e.message, 'err'); }
+}
+
+async function renderCalendar() {
+  const rows = await api('/api/classes');
+  const projects = await api('/api/projects');
+  const by = {};
+  rows.forEach(function (c) { (by[c.class_date] = by[c.class_date] || []).push({ type: 'class', title: c.subject }); });
+  projects.forEach(function (p) { (by[p.deadline] = by[p.deadline] || []).push({ type: 'project', title: p.name }); });
+  const now = new Date();
+  const y = now.getFullYear(), m = now.getMonth();
+  const first = new Date(y, m, 1);
+  const days = new Date(y, m + 1, 0).getDate();
+  const off = first.getDay();
+  let cells = '';
+  for (let i = 0; i < off; i++) cells += '<div class="cal-cell"></div>';
+  for (let d = 1; d <= days; d++) {
+    const ds = y + '-' + String(m + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+    const items = by[ds] || [];
+    cells += '<div class="cal-cell"><div class="cal-num">' + d + '</div>' + items.slice(0, 6).map(function (it) {
+      return '<span class="dot ' + (it.type === 'project' ? 'warn' : 'green') + '" title="' + esc(it.title) + '"></span>';
+    }).join('') + '</div>';
+  }
+  qs('#content').innerHTML =
+    '<div class="card"><div class="card-head"><div><div class="card-title">' + now.toLocaleString(undefined, { month: 'long', year: 'numeric' }) + '</div><div class="card-sub">Green dots are classes; amber dots are project deadlines.</div></div></div>' +
+    '<div class="card-body"><div class="calendar">' +
+    ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(function (x) { return '<div class="cal-head">' + x + '</div>'; }).join('') +
+    cells +
+    '</div></div></div>';
+}
+
+async function renderSettings() {
+  const s = await api('/api/settings');
+  qs('#content').innerHTML =
+    '<div class="grid-two"><div><div class="card"><div class="card-head"><div><div class="card-title">Teacher Profile</div><div class="card-sub">Used throughout the dashboard and reminder messages.</div></div></div>' +
+    '<div class="card-body"><div class="form-grid">' +
+      field('Name', 'setName', s.teacher.name) +
+      field('School / College', 'setSchool', s.teacher.school) +
+      field('Department', 'setDept', s.teacher.department) +
+      field('Email', 'setEmail', s.teacher.email) +
+    '</div><div class="form-actions"><button class="btn primary" id="saveSettings">Save Profile</button></div></div></div>' +
+    '<div class="card"><div class="card-head"><div><div class="card-title">Local Network</div><div class="card-sub">Open the app from another device on the same Wi-Fi.</div></div></div>' +
+    '<div class="card-body"><div class="notice">Wi-Fi address: <b>http://' + s.local_ip + ':' + (location.port || '5000') + '</b></div>' +
+    '<div class="helper">Start the app with <code>python app.py</code>. The browser opens automatically on the host computer.</div></div></div></div>' +
+    '<div><div class="card"><div class="card-head"><div><div class="card-title">Integrations</div><div class="card-sub">Server-side configuration status.</div></div></div>' +
+    '<div class="card-body"><div class="row"><div class="row-main"><b>AI</b><div class="row-meta">Local Ollama AI</div></div><span class="chip ' + (s.ai_configured ? 'green' : '') + '">' + (s.ai_configured ? 'Connected' : 'Not configured') + '</span></div>' +
+    '<div class="row"><div class="row-main"><b>WhatsApp</b><div class="row-meta">WhatsApp Cloud API</div></div><span class="chip ' + (s.whatsapp_configured ? 'green' : '') + '">' + (s.whatsapp_configured ? 'Connected' : 'Not configured') + '</span></div>' +
+    '<div class="helper" style="margin-top:14px">AI runs on your computer through Ollama. WhatsApp secrets, if enabled, remain on the server in <code>.env</code>.</div></div></div></div></div>';
+  qs('#saveSettings').onclick = async function () {
+    const d = readFields(['setName', 'setSchool', 'setDept', 'setEmail']);
+    try {
+      await api('/api/settings', { method: 'PUT', body: JSON.stringify({ name: d.setName, school: d.setSchool, department: d.setDept, email: d.setEmail }) });
+      toast('Profile saved', 'ok');
+      await boot();
+    } catch (e) { toast(e.message, 'err'); }
+  };
+}
+
+boot().catch(function (e) { toast(e.message, 'err'); });
+</script>
+</body>
+</html>
