@@ -1,4 +1,4 @@
-<img width="1917" height="1013" alt="image" src="https://github.com/user-attachments/assets/a9b3050e-a788-4474-9efa-7986d1ede3b0" /># OBLIVION
+# OBLIVION
 Teacher AI Assistant
 Team No.
 
@@ -38,6 +38,7 @@ On Windows run run.bat
 Project Link
 
 GitHub: (https://github.com/Deeraj99/OBLIVION)
+<img width="1917" height="1013" alt="image" src="https://github.com/user-attachments/assets/a9b3050e-a788-4474-9efa-7986d1ede3b0" />
 <img width="1917" height="1013" alt="image" src="https://github.com/user-attachments/assets/309a52b8-6d2d-49e9-a320-fd700e6a4f70" />
 <img width="1917" height="1012" alt="image" src="https://github.com/user-attachments/assets/9ae1dfe9-9e2c-4476-b65a-f9ba928d451c" />
 <img width="1917" height="1006" alt="image" src="https://github.com/user-attachments/assets/a13594ff-6bcd-437f-84bc-2fb6f487f742" />
