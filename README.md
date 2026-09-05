@@ -50,3 +50,21 @@ All AI calls run through a thread-safe job manager (`services/job_manager.py`).
 - States: `queued`, `running`, `completed`, `failed`, `cancelled`.
 - The UI polls `/api/ai/jobs/<id>` every 1.5 s and never blocks the browser while Ollama is thinking.
 - Completed jobs are cleaned up after 30 minutes.
+
+<img width="1917" height="1013" alt="image" src="https://github.com/user-attachments/assets/5190e135-e429-4756-a70e-3e4a0b64e04a" />
+<img width="1917" height="1012" alt="image" src="https://github.com/user-attachments/assets/f42f7c54-9f7b-4073-9da3-fd382b690302" />
+<img width="1917" height="1006" alt="image" src="https://github.com/user-attachments/assets/5c0e083b-4c50-4ecb-8639-299ab7893dbd" />
+<img width="1917" height="1016" alt="image" src="https://github.com/user-attachments/assets/a604ec6b-91ea-4d4d-9e22-7f348d89f105" />
+<img width="1917" height="1015" alt="image" src="https://github.com/user-attachments/assets/d3db5e5f-5c52-463a-82c1-998c3a071979" />
+<img width="1912" height="1010" alt="image" src="https://github.com/user-attachments/assets/63240fd5-d71d-4b99-83da-204670559b63" />
+<img width="1917" height="1013" alt="image" src="https://github.com/user-attachments/assets/351dde90-ba9f-4307-9ff7-619d552b468f" />
+<img width="1917" height="1010" alt="image" src="https://github.com/user-attachments/assets/f320d9a1-5964-414a-8289-48ed9aa45551" />
+
+https://drive.google.com/drive/folders/17JVWwWAJUsRXAUkD1wU3uiDALrm4v27_
+
+
+
+
+
+
+
